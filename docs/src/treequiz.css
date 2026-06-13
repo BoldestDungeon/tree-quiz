@@ -1,5 +1,10 @@
 :root {
   --theme-primary: #0A5640;
   --theme-secondary: #FFC72A;
+
+  background-color: var(--theme-primary);
+  color: var(--theme-secondary);
+
+  font-family:Arial, Helvetica, sans-serif;
 }
 
