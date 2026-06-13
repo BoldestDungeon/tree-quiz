@@ -8,3 +8,39 @@
   font-family:Arial, Helvetica, sans-serif;
 }
 
+section {
+  display: none;
+}
+
+section#loading:not(.complete) {
+  display: block;
+}
+
+#loading.complete ~ section {
+  display: block;
+}
+
+
+.loading {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%) rotate(0deg);
+  width: 25vw;
+  height: 25vw;
+  color: transparent;
+  background-image: radial-gradient(transparent 25%, var(--theme-secondary) 30%, var(--theme-secondary) 45%, transparent 50%) ;
+  mask-image: conic-gradient(transparent, black 97.5%, transparent);
+  animation: spin 3s linear infinite;
+  background-position: center center;
+  background-size: 90% 90%;
+}
+
+
+
+
+@keyframes spin {
+  50% { background-size: 105% 105%; }
+  100% { transform: translateX(-50%) translateY(-50%) rotate(1turn); }
+}
