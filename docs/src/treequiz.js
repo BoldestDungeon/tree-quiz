@@ -1,3 +1,5 @@
+const baseURL = '/tree-quiz';
+
 function init(){}
 
 function loadLanguage(lang){
@@ -5,7 +7,7 @@ function loadLanguage(lang){
     lang = 'default';
   }
 
-  fetch(`/data/language.${lang}.csv`)
+  fetch(`${baseURL}/data/language.${lang}.csv`)
     .then(function(resp){ return resp.text() })
     .then(parseLanguageCSV)
 }
