@@ -23,7 +23,7 @@ function parseLanguageCSV(responseText) {
     const row = languageArray[i];
     if(!row.trim()) { continue; }
     const rowArr = row.split(',');
-    const key = rowArr.splice(1).trim();
+    const key = rowArr.splice(1)[0].trim();
     const value = (rowArr.join(',') || '').trim();
     languageObj[key] = value;
   }
