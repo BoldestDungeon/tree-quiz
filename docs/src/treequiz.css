@@ -30,7 +30,7 @@ section#loading:not(.complete) {
   width: 25vw;
   height: 25vw;
   color: transparent;
-  background-image: radial-gradient(transparent 25%, var(--theme-secondary) 30%, var(--theme-secondary) 45%, transparent 50%) ;
+  background-image: radial-gradient(transparent 27.5%, var(--theme-secondary) 30%, var(--theme-secondary) 47.5%, transparent 50%) ;
   mask-image: conic-gradient(transparent, black 97.5%, transparent);
   animation: spin 3s linear infinite;
   background-position: center center;
