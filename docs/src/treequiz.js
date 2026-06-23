@@ -35,8 +35,8 @@ function init(){
   }
 
   const defaultTranslationRequest = loadLanguage();
-  const questionRequest = loadQuestionSet(queryParams.type);
-  const photoRequest = loadPhotoList(queryParams.id);
+  const questionRequest = loadQuestionSet(queryParams.get('type'));
+  const photoRequest = loadPhotoList(queryParams.get('id'));
 
   const allRequests = [
     translationRequest,
