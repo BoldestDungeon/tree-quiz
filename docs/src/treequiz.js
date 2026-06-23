@@ -80,9 +80,9 @@ function parseLanguageCSV(responseText) {
     const row = languageArray[i];
     if(!row.trim()) { continue; }
     const rowArr = row.split(',');
-    const key = rowArr.splice(1)[0].trim();
+    const key = rowArr.splice(1);
     const value = (rowArr.join(',') || '').trim();
-    languageObj[key] = value;
+    languageObj[key[0].trim()] = value;
   }
   return languageObj;
 }
@@ -152,3 +152,7 @@ function formatPhotoRow(csvRow) {
 function cleanURLParams(text) {
   return text.replace(/\W/gi, '').toLowerCase();
 }
+
+
+
+init();
