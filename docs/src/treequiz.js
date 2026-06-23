@@ -80,9 +80,9 @@ function parseLanguageCSV(responseText) {
     const row = languageArray[i];
     if(!row.trim()) { continue; }
     const rowArr = row.split(',');
-    const key = rowArr.splice(1);
-    const value = (rowArr.join(',') || '').trim();
-    languageObj[key[0].trim()] = value;
+    const value = rowArr.splice(1).join(',');
+    const key = rowArr[0].trim();
+    languageObj[key] = value;
   }
   return languageObj;
 }
