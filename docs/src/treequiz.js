@@ -196,7 +196,7 @@ function processQuestionCSV(dataStr, treeID) {
   
   for(let i=0; i<dataArr.questions.length; i++) {
     const question = dataArr.questions[i];
-    question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== question.correctAnswer.toLowerCase()));
+    question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== (question.correctAnswer || '').toLowerCase()));
   }
   return dataArr;
 }
@@ -207,10 +207,11 @@ function processQuestionCSVLine(arr, line, index){
   }
   const treeID = arr.treeID;
   parsedLine = line.split(',');
-  parsedLine[2] = parsedLine[2].split(/[\\\|\/]/gi);
+  parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX]);
   arr.dataLines.push(parsedLine);
 
   let questionIndex = 0;
+  // We expect all question columns to come in pairs (question + image)
   for(let i=FIRST_QUESTION_COLUMN_INDEX; i<parsedLine.length; i+=2) {
     if(index === 0) {
       // First row. Set up all the questions using the column headers.
@@ -242,6 +243,14 @@ function processQuestionCSVLine(arr, line, index){
   }
 
   return arr;
+}
+
+function generateSynonyms(data) {
+  let synonyms = data.split(/[\\\|\/]/gi)
+  for(let i=0; i<synonyms.length; i++) {
+    synonyms[i] = synonyms[i].trim();
+  }
+  return synonyms;
 }
 
 init();
