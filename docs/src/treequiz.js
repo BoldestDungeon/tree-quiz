@@ -69,6 +69,16 @@ function loadLanguage(lang){
     });
 }
 
+function setUserLang(lang) {
+  window.localStorage.setItem('language', lang);
+}
+function getUserLang() {
+  return window.localStorage.getItem('language') || 'default';
+}
+function clearUserLang() {
+  window.localStorage.removeItem('language');
+}
+
 function parseLanguageCSV(responseText) {
   const languageObj = {};
 
@@ -102,8 +112,13 @@ function loadQuestionSet(type) {
     });
 }
 
+function loadQuestionTranslations(type){
+  const lang = getUserLang();
+  // TODO;
+}
+
 function parseQuestionCSV(responseText) {
-  return responseText;
+  return processQuestionCSV(responseText);
 }
 
 function loadPhotoList(treeID){
@@ -142,17 +157,91 @@ function parsePhotoList(responseText, treeID) {
 }
 
 function formatPhotoRow(csvRow) {
-  const currentYear = new Date().getFullYear();
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
   let startDate = new Date(`${currentYear}-${csvRow[PHOTO_IMAGE_START_DATE_COLUMN_INDEX]}`);
   if(startDate === 'Invalid Date') {
-    startDate = new Date(`${currentYear}-01-01`);
+    startDate = new Date(`${currentYear}-01-01T00:00-06:00`);
   }
+  if(startDate > now) {
+    startDate = subtractOneYear(startDate);
+  }
+  return {
+    treeID: csvRow[PHOTO_TREE_ID_COLUMN_INDEX],
+    url: csvRow[PHOTO_IMAGE_COLUMN_INDEX],
+    start: startDate,
+  }
+}
+
+function subtractOneYear(date) {
+  return new Date(`${date.getFullYear()-1}-${parseInt((date.getMonth()+1)/10)}${(date.getMonth()+1)%10}-${parseInt(date.getDate()/10)}${date.getDate()%10}T${parseInt(date.getHours()/10)}${date.getHours()%10}:${parseInt(date.getMinutes()/10)}${date.getMinutes()%10}-${parseInt(date.getTimezoneOffset()/600)}${parseInt(date.getTimezoneOffset()/60)%10}:00`)
 }
 
 function cleanURLParams(text) {
   return text.replace(/\W/gi, '').toLowerCase();
 }
 
+function processQuestionCSV(dataStr, treeID) {
+  const dataStructure = {
+    treeID: treeID, 
+    dataLines: [], 
+    questions: [], 
+    name: null, 
+    synonyms: [], 
+    mainImage: null, 
+    dataSheetURL: null 
+  };
+  const dataArr = dataStr.split('\n').reduce(processQuestionCSVLine, dataStructure);
+  
+  for(let i=0; i<dataArr.questions.length; i++) {
+    const question = dataArr.questions[i];
+    question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== question.correctAnswer.toLowerCase()));
+  }
+  return dataArr;
+}
 
+function processQuestionCSVLine(arr, line, index){
+  if(!line) {
+    return arr;
+  }
+  const treeID = arr.treeID;
+  parsedLine = line.split(',');
+  parsedLine[2] = parsedLine[2].split(/[\\\|\/]/gi);
+  arr.dataLines.push(parsedLine);
+
+  let questionIndex = 0;
+  for(let i=FIRST_QUESTION_COLUMN_INDEX; i<parsedLine.length; i+=2) {
+    if(index === 0) {
+      // First row. Set up all the questions using the column headers.
+      arr.questions.push({ prompt: parsedLine[i], correctAnswer: null, image: '', incorrectAnswers: []});
+    }
+    else if(parsedLine[ID_COLUMN_INDEX] === treeID) {
+      // Correct tree. Add the current answers as correct answers
+      arr.questions[questionIndex].correctAnswer = parsedLine[i];
+      arr.questions[questionIndex].image = parsedLine[i+1];
+      arr.name = parsedLine[TREE_NAME_COLUMN_INDEX];
+      arr.synonyms = parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX];
+      arr.dataSheetURL = parsedLine[DATA_SHEET_COLUMN_INDEX];
+    }
+    else if(arr.questions[questionIndex]) {
+      // Not the current tree. If we have answers and images, add them to the incorrect answer list
+      const question = arr.questions[questionIndex];
+      const existingAnswerIndex = question.incorrectAnswers.findIndex( (answer) => answer.text.toLowerCase().trim() === parsedLine[i].toLowerCase().trim() );
+      if(existingAnswerIndex > -1) { 
+        // If this is a repeat answer, just save the image if we have one
+        if(parsedLine[i+1]) {
+          question.incorrectAnswers[existingAnswerIndex].images.push(parsedLine[i+1]);
+        }
+      }
+      else {
+        question.incorrectAnswers.push({text: parsedLine[i].trim(), images: [parsedLine[i+1]]});
+      }
+    }
+    questionIndex ++;
+  }
+
+  return arr;
+}
 
 init();
