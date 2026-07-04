@@ -106,6 +106,7 @@ function applyTranslation() {
     const el = elementsToTranslate[i];
     const languageKey = el.dataset.languageKey;
     el.innerText = translation[languageKey] || defaultTranslation[languageKey] || '';
+    el.innerHTML = el.innerText.replace(/\n/gi, '<br />');
   }
 }
 
