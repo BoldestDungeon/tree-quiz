@@ -9,4 +9,5 @@ welcome_text,This quiz was developed to help teach you how to identify key featu
 welcome_action,Continue
 quiz_main_heading,Can You Identify Me?
 quiz_main_continue,I Know It!
-
+quiz_identify_heading,What Plant am I?
+quiz_identify_submit,Submits
