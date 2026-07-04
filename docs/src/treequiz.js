@@ -45,7 +45,10 @@ function init(){
     photoRequest,
   ].filter(function(obj){ return obj || false });
 
-  Promise.all(allRequests).then(loadingElement.classList.add('complete'));
+  Promise.all(allRequests).then(() => {
+    applyTranslation();
+    loadingElement.classList.add('complete');
+  });
 
 }
 
@@ -95,6 +98,15 @@ function parseLanguageCSV(responseText) {
     languageObj[key] = value;
   }
   return languageObj;
+}
+
+function applyTranslation() {
+  const elementsToTranslate = document.querySelectorAll('[data-language-key]');
+  for(let i=0; i<elementsToTranslate.length; i++){
+    const el = elementsToTranslate[i];
+    const languageKey = el.dataset.languageKey;
+    el.innerText = translation[languageKey] || defaultTranslation[languageKey] || '';
+  }
 }
 
 function loadQuestionSet(type) {
