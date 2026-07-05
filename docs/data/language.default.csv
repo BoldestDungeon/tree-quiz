@@ -3,11 +3,17 @@ landing_heading,NDSU Campus Arboretum
 landing_datasheet_link,About this Plant
 landing_start_quiz,Can You Identify Me?
 landing_homepage_link,See More Plants
-landing_languages,Languages
+landing_languages,Change Language
 welcome_heading,Welcome to the NDSU Woody Plant Quiz!
 welcome_text,This quiz was developed to help teach you how to identify key features on woody plants. Click on each feature of the tree to practice your identification skills then submit your answer.
 welcome_action,Continue
 quiz_main_heading,Can You Identify Me?
 quiz_main_continue,I Know It!
 quiz_identify_heading,What Plant am I?
-quiz_identify_submit,Submits
+quiz_identify_submit,Submit
+
+*** LANGUAGE SUPPORT ***
+language_choice_default,English
+language_choice_es,Spanish
+language_choice_cmn,Mandarin
+

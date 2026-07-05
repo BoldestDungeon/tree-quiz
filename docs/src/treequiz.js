@@ -46,6 +46,7 @@ function init(){
   ].filter(function(obj){ return obj || false });
 
   Promise.all(allRequests).then(() => {
+    populateLanguageSelect();
     applyTranslation();
     loadingElement.classList.add('complete');
   });
@@ -74,6 +75,7 @@ function loadLanguage(lang){
 
 function setUserLang(lang) {
   window.localStorage.setItem('language', lang);
+  loadLanguage(lang).then(applyTranslation);
 }
 function getUserLang() {
   return window.localStorage.getItem('language') || 'default';
@@ -95,6 +97,10 @@ function parseLanguageCSV(responseText) {
     const rowArr = row.split(',');
     const value = rowArr.splice(1).join(',');
     const key = rowArr[0].trim();
+
+    // Skip instructional rows
+    if(key.includes(' ') || key.indexOf('*')===0) { continue; }
+
     languageObj[key] = value;
   }
   return languageObj;
@@ -264,6 +270,35 @@ function generateSynonyms(data) {
     synonyms[i] = synonyms[i].trim();
   }
   return synonyms;
+}
+
+function populateLanguageSelect(){
+  const languageSelectEl = document.getElementById('language-select');
+  if(!languageSelectEl) {
+    console.error('COULD NOT FIND LANGUAGE SELECT ELEMENT');
+    return;
+  }
+  // We have already populated the element, don't do it a second time
+  if(languageSelectEl.children.length > 1) {
+    return;
+  }
+  // Find all the languages defined via the translation keys
+  for(let key in defaultTranslation) {
+    if(key.indexOf('language_choice_') !== 0) { continue; }
+    
+    const languageOption = document.createElement('option');
+    languageOption.dataset.languageKey = key;
+    languageOption.value = key.replace('language_choice_', '');
+    languageSelectEl.appendChild(languageOption);
+  }
+  languageSelectEl.addEventListener('change', onLanguageSelect);
+  languageSelectEl.value = getUserLang();
+}
+
+function onLanguageSelect(evt){
+  const languageSelectEl = evt.target;
+  const lang = languageSelectEl.value;
+  setUserLang(lang);
 }
 
 init();
