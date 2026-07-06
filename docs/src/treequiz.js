@@ -6,7 +6,9 @@ const TREE_NAME_COLUMN_INDEX = 1;
 const TREE_ALTERNATE_NAMES_COLUMN_INDEX = 2;
 const DATA_SHEET_COLUMN_INDEX = 3;
 const FIRST_QUESTION_COLUMN_INDEX = 4;
-const FIRST_SEASONAL_QUESTION_COLUMN_INDEX = {deciduous: 10, coniferous: 8, default: 10};
+
+// TODO: Make this dynamic based on which CSV file we loaded
+const FIRST_SEASONAL_QUESTION_COLUMN_INDEX = 10; 
 
 // HOW MANY INCORRECT CHOICES SHOULD BE SHOWN WITH EACH QUESTION? 
 const MAX_INCORRECT_ANSWERS = 3;
@@ -124,7 +126,7 @@ function loadQuestionSet(type) {
   type = cleanURLParams(type);
   return fetch(`${baseURL}/data/${type}.csv`)
     .then(function(resp){ return resp.text() })
-    .then(parseQuestionCSV)
+    .then(processQuestionCSV)
     .then(function(data){ 
       questionList = data;
       return data;
@@ -134,10 +136,6 @@ function loadQuestionSet(type) {
 function loadQuestionTranslations(type){
   const lang = getUserLang();
   // TODO;
-}
-
-function parseQuestionCSV(responseText) {
-  return processQuestionCSV(responseText);
 }
 
 function loadPhotoList(treeID){
@@ -224,7 +222,12 @@ function processQuestionCSVLine(arr, line, index){
   if(!line) {
     return arr;
   }
-  const treeID = arr.treeID;
+
+  const queryParams = new URLSearchParams(location.search);
+  const treeID = (queryParams.get('id') || '').trim();
+  if(!treeID) {
+    console.error('NO TREE ID PROVIDED!')
+  }
   parsedLine = line.split(',');
   parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX]);
   arr.dataLines.push(parsedLine);
@@ -234,7 +237,7 @@ function processQuestionCSVLine(arr, line, index){
   for(let i=FIRST_QUESTION_COLUMN_INDEX; i<parsedLine.length; i+=2) {
     if(index === 0) {
       // First row. Set up all the questions using the column headers.
-      arr.questions.push({ prompt: parsedLine[i], correctAnswer: null, image: '', incorrectAnswers: []});
+      arr.questions.push({ prompt: parsedLine[i], correctAnswer: null, image: '', incorrectAnswers: [], isSeasonal: i>= FIRST_SEASONAL_QUESTION_COLUMN_INDEX});
     }
     else if(parsedLine[ID_COLUMN_INDEX] === treeID) {
       // Correct tree. Add the current answers as correct answers
@@ -299,6 +302,18 @@ function onLanguageSelect(evt){
   const languageSelectEl = evt.target;
   const lang = languageSelectEl.value;
   setUserLang(lang);
+}
+
+function generateQuestionHTML() {
+  const questionWrapper = document.getElementById('quiz_main');
+  if(!questionWrapper) {
+    console.error('COULD NOT FIND QUIZ WRAPPER!');
+    return;
+  }
+
+  for(let i=0; i<questionList.questions.length; i++) {
+
+  }
 }
 
 init();
