@@ -312,8 +312,23 @@ function generateQuestionHTML() {
   }
 
   for(let i=0; i<questionList.questions.length; i++) {
-
+    const question = questionList.questions[i];
+    let questionHTML;
+    if(question.isSeasonal) {
+      questionHTML = generateSeasonalQuestionHTML(question);
+    }
+    else {
+      questionHTML = generateMainQuestionHTML(question);
+    }
   }
+}
+
+function generateSeasonalQuestionHTML(question) {
+  return null;
+}
+
+function generateMainQuestionHTML(question) {
+  return null;
 }
 
 init();
