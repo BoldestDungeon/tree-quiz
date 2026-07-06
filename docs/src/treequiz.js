@@ -61,7 +61,7 @@ function loadLanguage(lang){
   }
   lang = cleanURLParams(lang);
 
-  return fetch(`${baseURL}/data/language.${lang}.csv`)
+  return fetch(`${baseURL}/data/language.${lang === 'en' ? 'default' : lang}.csv`)
     .then(function(resp){ return resp.text() })
     .then(parseLanguageCSV)
     .then(function(language){ 

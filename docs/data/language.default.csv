@@ -13,7 +13,7 @@ quiz_identify_heading,What Plant am I?
 quiz_identify_submit,Submit
 
 *** LANGUAGE SUPPORT ***
-language_choice_default,English
+language_choice_en,English
 language_choice_es,Spanish
 language_choice_cmn,Mandarin
 
