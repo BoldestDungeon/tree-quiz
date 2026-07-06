@@ -168,7 +168,6 @@ function parsePhotoList(responseText, treeID) {
       continue;
     }
     photoArr.push(formatPhotoRow(rowArr));
-    
   }
   return photoArr;
 }
