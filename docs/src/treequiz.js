@@ -213,6 +213,10 @@ function processQuestionCSV(dataStr, treeID) {
   for(let i=0; i<dataArr.questions.length; i++) {
     const question = dataArr.questions[i];
     question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== (question.correctAnswer || '').toLowerCase()));
+
+    for(let a=0; a<question.incorrectAnswers.length; a++) {
+      defaultTranslation[`incorrect_answer_${i}_${a}`] = answerText;
+    }
   }
   return dataArr;
 }
@@ -270,10 +274,8 @@ function processQuestionCSVLine(arr, line, index){
         }
       }
       else {
-        const wrongAnswerIndex = question.incorrectAnswers.length;
         const answerText = parsedLine[i].trim();
         question.incorrectAnswers.push({text: answerText, images: [parsedLine[i+1]]});
-        defaultTranslation[`incorrect_answer_${questionIndex}_${wrongAnswerIndex}`] = answerText;
       }
     }
     questionIndex ++;
