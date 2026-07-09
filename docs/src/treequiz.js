@@ -245,7 +245,7 @@ function processQuestionCSVLine(arr, line, index){
         index: questionIndex,
       };
       arr.questions.push(questionData);
-      defaultTranslation['question_prompt_' + quesitonIndex] = questionData.prompt;
+      defaultTranslation['question_prompt_' + questionIndex] = questionData.prompt;
     }
     else if(parsedLine[ID_COLUMN_INDEX] === treeID) {
       // Correct tree. Add the current answers as correct answers
