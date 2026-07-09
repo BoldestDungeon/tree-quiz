@@ -385,7 +385,7 @@ function generateSeasonalQuestionHTML(question) {
 
     const answerText = document.createElement('span');
     answerText.className = 'answer_text seasonal_answer_text';
-    answerText.dataset.languageKey = answerImg.languageKey;
+    answerText.dataset.languageKey = answerObj.languageKey;
     answerEl.appendChild(answerText);
 
     answersDiv.appendChild(answerEl);
@@ -410,7 +410,7 @@ function generateMainQuestionHTML(question) {
   const questionImg = document.createElement('img');
   questionImg.className = 'question_img';
   questionImg.src = question.image;
-  questionElement.appendChild(answerImg);
+  questionElement.appendChild(questionImg);
 
   const answersDiv = document.createElement('div');
   answersDiv.className = 'answers_wrapper';
