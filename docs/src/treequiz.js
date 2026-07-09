@@ -50,6 +50,7 @@ function init(){
   Promise.all(allRequests).then(() => {
     populateLanguageSelect();
     applyTranslation();
+    generateQuestionHTML();
     loadingElement.classList.add('complete');
   });
 
@@ -65,11 +66,8 @@ function loadLanguage(lang){
     .then(function(resp){ return resp.text() })
     .then(parseLanguageCSV)
     .then(function(language){ 
-      if(lang == 'default'){
-        defaultTranslation = language 
-      }
-      else {
-        translation = language;
+      for(let key in language){
+        saveTranslationKey(key, language[key], lang);
       }
       return language;
     });
@@ -353,22 +351,149 @@ function generateQuestionHTML() {
     else {
       questionHTML = generateMainQuestionHTML(question);
     }
+    questionWrapper.appendChild(questionHTML);
   }
 }
 
 function generateSeasonalQuestionHTML(question) {
+  if(!question.prompt || !question.correctAnswer) {
+    return null;
+  }
+  const answers = generateMultipleChoice(question);
   const questionElement = document.createElement('div');
   questionElement.className = 'question seasonal';
 
   const headingElement = document.createElement('h3');
   headingElement.className = 'question_heading';
-  headingElement.dataset.languageKey = ''
+  headingElement.dataset.languageKey = `question_prompt_${question.index}`
+  questionElement.appendChild(headingElement);
+
+  const answersDiv = document.createElement('div');
+  answersDiv.className = 'answers_wrapper seasonal_answers';
+
+  for(let i=0; i<answers.length; i++) {
+    const answerObj = answers[i];
+    const answerEl = document.createElement('button');
+    answerEl.type = 'button';
+    answerEl.className = 'answer seasonal';
+    answerEl.addEventListener('click', answerObj.onSelect);
+
+    const answerImg = document.createElement('img');
+    answerImg.className = 'answer_img seasonal_img';
+    answerImg.src = answerObj.image;
+    answerEl.appendChild(answerImg);
+
+    const answerText = document.createElement('span');
+    answerText.className = 'answer_text seasonal_answer_text';
+    answerText.dataset.languageKey = answerImg.languageKey;
+    answerEl.appendChild(answerText);
+
+    answersDiv.appendChild(answerEl);
+  }
 
   return questionElement;
 }
 
 function generateMainQuestionHTML(question) {
-  return null;
+  if(!question.prompt || !question.correctAnswer) {
+    return null;
+  }
+  const answers = generateMultipleChoice(question);
+  const questionElement = document.createElement('div');
+  questionElement.className = 'question seasonal';
+
+  const headingElement = document.createElement('h3');
+  headingElement.className = 'question_heading';
+  headingElement.dataset.languageKey = `question_prompt_${question.index}`
+  questionElement.appendChild(headingElement);
+
+  const questionImg = document.createElement('img');
+  questionImg.className = 'question_img';
+  questionImg.src = question.image;
+  questionElement.appendChild(answerImg);
+
+  const answersDiv = document.createElement('div');
+  answersDiv.className = 'answers_wrapper';
+
+  for(let i=0; i<answers.length; i++) {
+    const answerObj = answers[i];
+    const answerEl = document.createElement('button');
+    answerEl.type = 'button';
+    answerEl.className = 'answer';
+    answerEl.addEventListener('click', answerObj.onSelect);
+
+    const answerText = document.createElement('span');
+    answerText.className = 'answer_text';
+    answerText.dataset.languageKey = answerImg.languageKey;
+    answerEl.appendChild(answerText);
+
+    answersDiv.appendChild(answerEl);
+  }
+
+  return questionElement;
 }
+
+function saveTranslationKey(key, value, lang){
+  // If CSV cell was wrapped with quotation marks (so that literal commas could be entered, for example), remove those
+  if(value[0] === '"' && value[value.length-1] === '"') {
+    value = value.slice(1, -1);
+  }
+
+  if(!lang || lang==='default' || lang==='en') {
+    defaultTranslation[key] = value;
+  }
+  else {
+    translation[key] === value;
+  }
+}
+
+function generateMultipleChoice(question) {
+  const answersArr = [];
+  answersArr.push({
+    languageKey: `correct_answer_${question.index}`,
+    position: Math.random(),
+    onSelect: onCorrectAnswerSelected,
+    image: question.image,
+  });
+
+  // Prepare all of our wrong answer objects
+  let incorrectCandidates = question.incorrectAnswers.map(function(answer, index){
+    return {
+      languageKey: `incorrect_answer_${question.index}_${index}`,
+      position: Math.random(),
+      onSelect: onIncorretAnswerSelected,
+      image: answer.image,
+    }
+  });
+
+  // Sort the incorrect answers and take up to the MAX_INCORRECT_ANSWERS
+  incorrectCandidates = incorrectCandidates.sort(function(a1, a2){
+    return a1.position - a2.position;
+  });
+  for(let i=0; i<incorrectCandidates.length && i<MAX_INCORRECT_ANSWERS; i++){
+    answersArr.push(incorrectCandidates[i]);
+  }
+
+  // Sort the correct answer into the mix as well
+  return answersArr.sort(function(a1, a2){
+    return a1.position - a2.position;
+  });
+}
+
+function onCorrectAnswerSelected(evt) {}
+function onIncorretAnswerSelected(evt) {}
+
+function goToQuizPage(evt) {}
+function goToIntroPage(evt) {}
+function goToIntroOrQuiz(evt) {
+  const today = new Date();
+  const lastVisit = new Date(localStorage.getItem('last_visit') || '2000-01-01');
+
+  if(lastVisit.getFullYear() === today.getFullYear() && lastVisit.getMonth() === today.getMonth() && lastVisit.getDate() === today.getDate() ) {
+    return goToQuizPage(evt);
+  }
+  return goToIntroPage(evt);
+}
+function goToSeasonalSelection(evt){}
 
 init();
