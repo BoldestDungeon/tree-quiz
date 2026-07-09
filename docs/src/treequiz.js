@@ -424,7 +424,7 @@ function generateMainQuestionHTML(question) {
 
     const answerText = document.createElement('span');
     answerText.className = 'answer_text';
-    answerText.dataset.languageKey = answerImg.languageKey;
+    answerText.dataset.languageKey = answerObj.languageKey;
     answerEl.appendChild(answerText);
 
     answersDiv.appendChild(answerEl);
