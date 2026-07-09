@@ -236,7 +236,16 @@ function processQuestionCSVLine(arr, line, index){
   for(let i=FIRST_QUESTION_COLUMN_INDEX; i<parsedLine.length; i+=2) {
     if(index === 0) {
       // First row. Set up all the questions using the column headers.
-      arr.questions.push({ prompt: parsedLine[i], correctAnswer: null, image: '', incorrectAnswers: [], isSeasonal: i>= FIRST_SEASONAL_QUESTION_COLUMN_INDEX});
+      const questionData = { 
+        prompt: parsedLine[i], 
+        correctAnswer: null, 
+        image: '', 
+        incorrectAnswers: [], 
+        isSeasonal: i>= FIRST_SEASONAL_QUESTION_COLUMN_INDEX,
+        index: questionIndex,
+      };
+      arr.questions.push(questionData);
+      defaultTranslation['question_prompt_' + quesitonIndex] = questionData.prompt;
     }
     else if(parsedLine[ID_COLUMN_INDEX] === treeID) {
       // Correct tree. Add the current answers as correct answers
@@ -245,6 +254,10 @@ function processQuestionCSVLine(arr, line, index){
       arr.name = parsedLine[TREE_NAME_COLUMN_INDEX];
       arr.synonyms = parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX];
       arr.dataSheetURL = parsedLine[DATA_SHEET_COLUMN_INDEX];
+
+      defaultTranslation.tree_name = parsedLine[TREE_NAME_COLUMN_INDEX];
+      defaultTranslation.tree_synonyms = generateSynonymText(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX], true);
+      defaultTranslation['correct_answer_' + questionIndex] = arr.questions[questionIndex].correctAnswer;
     }
     else if(arr.questions[questionIndex]) {
       // Not the current tree. If we have answers and images, add them to the incorrect answer list
@@ -257,7 +270,10 @@ function processQuestionCSVLine(arr, line, index){
         }
       }
       else {
-        question.incorrectAnswers.push({text: parsedLine[i].trim(), images: [parsedLine[i+1]]});
+        const wrongAnswerIndex = question.incorrectAnswers.length;
+        const answerText = parsedLine[i].trim();
+        question.incorrectAnswers.push({text: answerText, images: [parsedLine[i+1]]});
+        defaultTranslation[`incorrect_answer_${questionIndex}_${wrongAnswerIndex}`] = answerText;
       }
     }
     questionIndex ++;
@@ -266,12 +282,28 @@ function processQuestionCSVLine(arr, line, index){
   return arr;
 }
 
-function generateSynonyms(data) {
+function generateSynonyms(data, defaultLanguage) {
   let synonyms = data.split(/[\\\|\/]/gi)
   for(let i=0; i<synonyms.length; i++) {
     synonyms[i] = synonyms[i].trim();
   }
   return synonyms;
+}
+function generateSynonymText(synonymArr) {
+  if(!synonymArr.length) {
+    return '';
+  }
+  else if(synonymArr.length === 1) {
+    return synonymArr[0];
+  }
+  const firstEntries = synonymArr.slice(0, synonymArr.length - 1);
+  const finalEntry = synonymArr.slice(-1);
+
+  let translationToUse = defaultLanguage ? defaultTranslation : translation;
+  let listJoiner = `${translationToUse.answer_synonym_joiner || ','} `;
+  let finalJoiner = ` ${translationToUse.answer_final_synonym_joiner || 'and'} `;
+  
+  return `${firstEntries.join(listJoiner)}${finalJoiner}${finalEntry}`;
 }
 
 function populateLanguageSelect(){
@@ -323,7 +355,14 @@ function generateQuestionHTML() {
 }
 
 function generateSeasonalQuestionHTML(question) {
-  return null;
+  const questionElement = document.createElement('div');
+  questionElement.className = 'question seasonal';
+
+  const headingElement = document.createElement('h3');
+  headingElement.className = 'question_heading';
+  headingElement.dataset.languageKey = ''
+
+  return questionElement;
 }
 
 function generateMainQuestionHTML(question) {

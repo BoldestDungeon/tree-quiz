@@ -11,6 +11,8 @@ quiz_main_heading,Can You Identify Me?
 quiz_main_continue,I Know It!
 quiz_identify_heading,What Plant am I?
 quiz_identify_submit,Submit
+answer_synonym_joiner,","
+answer_final_synonym_joiner,and
 
 *** LANGUAGE SUPPORT ***
 language_choice_en,English
