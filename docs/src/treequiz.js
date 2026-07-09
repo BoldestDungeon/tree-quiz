@@ -215,7 +215,7 @@ function processQuestionCSV(dataStr, treeID) {
     question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== (question.correctAnswer || '').toLowerCase()));
 
     for(let a=0; a<question.incorrectAnswers.length; a++) {
-      defaultTranslation[`incorrect_answer_${i}_${a}`] = answerText;
+      defaultTranslation[`incorrect_answer_${i}_${a}`] = question.incorrectAnswers[a].text;
     }
   }
   return dataArr;
