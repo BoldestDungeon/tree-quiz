@@ -282,14 +282,14 @@ function processQuestionCSVLine(arr, line, index){
   return arr;
 }
 
-function generateSynonyms(data, defaultLanguage) {
+function generateSynonyms(data) {
   let synonyms = data.split(/[\\\|\/]/gi)
   for(let i=0; i<synonyms.length; i++) {
     synonyms[i] = synonyms[i].trim();
   }
   return synonyms;
 }
-function generateSynonymText(synonymArr) {
+function generateSynonymText(synonymArr, defaultLanguage) {
   if(!synonymArr.length) {
     return '';
   }
