@@ -344,7 +344,7 @@ function generateQuestionHTML() {
 
   for(let i=0; i<questionList.questions.length; i++) {
     const question = questionList.questions[i];
-    const questionHTML = question.isSeasonal ? generateSeasonalQuestionHTML(question) : questionHTML = generateMainQuestionHTML(question);
+    const questionHTML = question.isSeasonal ? generateSeasonalQuestionHTML(question) : generateMainQuestionHTML(question);
 
     console.log('QUESTION', question, questionHTML)
     questionHTML && questionWrapper.appendChild(questionHTML);
