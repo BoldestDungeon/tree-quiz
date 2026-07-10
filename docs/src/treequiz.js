@@ -65,7 +65,7 @@ function loadLanguage(lang){
   lang = cleanURLParams(lang);
 
   // No need to fetch the language file a second time
-  if(translation[lang]) {
+  if(translation[lang] && Object.keys(translation[lang]).length) {
     return Promise.resolve(translation[lang]);
   }
 
