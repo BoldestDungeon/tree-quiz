@@ -49,8 +49,8 @@ function init(){
 
   Promise.all(allRequests).then(() => {
     populateLanguageSelect();
-    applyTranslation();
     generateQuestionHTML();
+    applyTranslation();
     loadingElement.classList.add('complete');
   });
 
@@ -401,7 +401,7 @@ function generateMainQuestionHTML(question, questionWrapper) {
   }
   const answers = generateMultipleChoice(question);
   const questionElement = document.createElement('div');
-  questionElement.className = 'question seasonal';
+  questionElement.className = 'question main';
 
   const headingElement = document.createElement('h3');
   headingElement.className = 'question_heading';
@@ -465,7 +465,7 @@ function generateMultipleChoice(question) {
       languageKey: `incorrect_answer_${question.index}_${index}`,
       position: Math.random(),
       onSelect: onIncorretAnswerSelected,
-      image: answer.image,
+      image: answer.images[parseInt(Math.random() * answer.images.length)],
     }
   });
 
