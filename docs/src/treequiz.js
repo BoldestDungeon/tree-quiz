@@ -21,8 +21,7 @@ const PHOTO_IMAGE_START_DATE_COLUMN_INDEX = 2;
 // RELATIVE ROOT URL FOR THIS PROJECT. ONLY CHANGE IF THE CODE IS DEPLOYED TO A NEW HOST
 const baseURL = '/tree-quiz';
 
-let defaultTranslation = {};
-let translation = {};
+let translation = { default: {} };
 let questionList = {};
 let photoList = [];
 
@@ -32,11 +31,14 @@ function init(){
   const loadingElement = document.getElementById('loading');
 
   let translationRequest;
-  if(queryParams.lang) {
-    translationRequest = loadLanguage(queryParams.lang);
+  
+  const defaultTranslationRequest = loadLanguage();
+
+  const userLang = getUserLang();
+  if(userLang) {
+    translationRequest = loadLanguage(userLang);
   }
 
-  const defaultTranslationRequest = loadLanguage();
   const questionRequest = loadQuestionSet(queryParams.get('type'));
   const photoRequest = loadPhotoList(queryParams.get('id'));
 
@@ -61,6 +63,11 @@ function loadLanguage(lang){
     lang = 'default';
   }
   lang = cleanURLParams(lang);
+
+  // No need to fetch the language file a second time
+  if(translation[lang]) {
+    return Promise.resolve(translation[lang]);
+  }
 
   return fetch(`${baseURL}/data/language.${lang === 'en' ? 'default' : lang}.csv`)
     .then(function(resp){ return resp.text() })
@@ -108,10 +115,11 @@ function parseLanguageCSV(responseText) {
 
 function applyTranslation() {
   const elementsToTranslate = document.querySelectorAll('[data-language-key]');
+
   for(let i=0; i<elementsToTranslate.length; i++){
     const el = elementsToTranslate[i];
     const languageKey = el.dataset.languageKey;
-    el.innerText = translation[languageKey] || defaultTranslation[languageKey] || '';
+    el.innerText = getTranslation(languageKey);
     el.innerHTML = el.innerText.replace(/\n/gi, '<br />');
   }
 }
@@ -213,7 +221,7 @@ function processQuestionCSV(dataStr, treeID) {
     question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== (question.correctAnswer || '').toLowerCase()));
 
     for(let a=0; a<question.incorrectAnswers.length; a++) {
-      defaultTranslation[`incorrect_answer_${i}_${a}`] = question.incorrectAnswers[a].text;
+      translation.default[`incorrect_answer_${i}_${a}`] = question.incorrectAnswers[a].text;
     }
   }
   return dataArr;
@@ -247,7 +255,7 @@ function processQuestionCSVLine(arr, line, index){
         index: questionIndex,
       };
       arr.questions.push(questionData);
-      defaultTranslation['question_prompt_' + questionIndex] = questionData.prompt;
+      translation.default['question_prompt_' + questionIndex] = questionData.prompt;
     }
     else if(parsedLine[ID_COLUMN_INDEX] === treeID) {
       // Correct tree. Add the current answers as correct answers
@@ -257,9 +265,9 @@ function processQuestionCSVLine(arr, line, index){
       arr.synonyms = parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX];
       arr.dataSheetURL = parsedLine[DATA_SHEET_COLUMN_INDEX];
 
-      defaultTranslation.tree_name = parsedLine[TREE_NAME_COLUMN_INDEX];
-      defaultTranslation.tree_synonyms = generateSynonymText(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX], true);
-      defaultTranslation['correct_answer_' + questionIndex] = arr.questions[questionIndex].correctAnswer;
+      translation.default.tree_name = parsedLine[TREE_NAME_COLUMN_INDEX];
+      translation.default.tree_synonyms = generateSynonymText(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX], true);
+      translation.default['correct_answer_' + questionIndex] = arr.questions[questionIndex].correctAnswer;
     }
     else if(arr.questions[questionIndex]) {
       // Not the current tree. If we have answers and images, add them to the incorrect answer list
@@ -298,8 +306,9 @@ function generateSynonymText(synonymArr, defaultLanguage) {
   }
   const firstEntries = synonymArr.slice(0, synonymArr.length - 1);
   const finalEntry = synonymArr.slice(-1);
+  const userLang = getUserLang();
 
-  let translationToUse = defaultLanguage ? defaultTranslation : translation;
+  let translationToUse = defaultLanguage ? translation.default : translation[userLang];
   let listJoiner = `${translationToUse.answer_synonym_joiner || ','} `;
   let finalJoiner = ` ${translationToUse.answer_final_synonym_joiner || 'and'} `;
   
@@ -317,7 +326,7 @@ function populateLanguageSelect(){
     return;
   }
   // Find all the languages defined via the translation keys
-  for(let key in defaultTranslation) {
+  for(let key in translation.default) {
     if(key.indexOf('language_choice_') !== 0) { continue; }
     
     const languageOption = document.createElement('option');
@@ -443,11 +452,15 @@ function saveTranslationKey(key, value, lang){
   }
 
   if(!lang || lang==='default' || lang==='en') {
-    defaultTranslation[key] = value;
+    lang = 'default';
   }
-  else {
-    translation[key] = value;
-  }
+  translation[lang] = translation[lang] || {};
+  translation[lang][key] = value;
+}
+
+function getTranslation(key) {
+  const lang = getUserLang();
+  return translation[lang]?.[key] || translation.default[key] || '';
 }
 
 function generateMultipleChoice(question) {
