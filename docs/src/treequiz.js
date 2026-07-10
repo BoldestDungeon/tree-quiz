@@ -380,7 +380,7 @@ function generateSeasonalQuestionHTML(question) {
 
     const answerImg = document.createElement('img');
     answerImg.className = 'answer_img seasonal_img';
-    answerImg.src = '/images/' + answerObj.image;
+    answerImg.src = baseURL + '/images/' + answerObj.image;
     answerEl.appendChild(answerImg);
 
     const answerText = document.createElement('span');
@@ -409,7 +409,7 @@ function generateMainQuestionHTML(question) {
 
   const questionImg = document.createElement('img');
   questionImg.className = 'question_img';
-  questionImg.src =  '/images/' + question.image;
+  questionImg.src =  baseURL + '/images/' + question.image;
   questionElement.appendChild(questionImg);
 
   const answersDiv = document.createElement('div');
