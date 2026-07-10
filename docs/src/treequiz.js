@@ -350,7 +350,8 @@ function generateQuestionHTML() {
     }
     else {
       questionHTML = generateMainQuestionHTML(question);
-    }
+    }    
+    console.log('QUESTION', question, questionHTML)
     questionHTML && questionWrapper.appendChild(questionHTML);
   }
 }
