@@ -351,7 +351,7 @@ function generateQuestionHTML() {
     else {
       questionHTML = generateMainQuestionHTML(question);
     }
-    questionWrapper.appendChild(questionHTML);
+    questionHTML && questionWrapper.appendChild(questionHTML);
   }
 }
 
