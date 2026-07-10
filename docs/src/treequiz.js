@@ -344,14 +344,17 @@ function generateQuestionHTML() {
 
   for(let i=0; i<questionList.questions.length; i++) {
     const question = questionList.questions[i];
-    const questionHTML = question.isSeasonal ? generateSeasonalQuestionHTML(question) : generateMainQuestionHTML(question);
 
-    console.log('QUESTION', question, questionHTML)
-    questionHTML && questionWrapper.appendChild(questionHTML);
+    if (question.isSeasonal) {
+      questionHTML = generateSeasonalQuestionHTML(question, questionWrapper);
+    }
+    else {
+      questionHTML = generateMainQuestionHTML(question, questionWrapper);
+    }    
   }
 }
 
-function generateSeasonalQuestionHTML(question) {
+function generateSeasonalQuestionHTML(question, questionWrapper) {
   if(!question.prompt || !question.correctAnswer) {
     return null;
   }
@@ -387,10 +390,11 @@ function generateSeasonalQuestionHTML(question) {
     answersDiv.appendChild(answerEl);
   }
 
+  questionWrapper.appendChild(questionElement);
   return questionElement;
 }
 
-function generateMainQuestionHTML(question) {
+function generateMainQuestionHTML(question, questionWrapper) {
   if(!question.prompt || !question.correctAnswer) {
     return null;
   }
@@ -426,6 +430,7 @@ function generateMainQuestionHTML(question) {
     answersDiv.appendChild(answerEl);
   }
 
+  questionWrapper.appendChild(questionElement);
   return questionElement;
 }
 
