@@ -446,7 +446,7 @@ function saveTranslationKey(key, value, lang){
     defaultTranslation[key] = value;
   }
   else {
-    translation[key] === value;
+    translation[key] = value;
   }
 }
 
