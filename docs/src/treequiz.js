@@ -390,6 +390,7 @@ function generateSeasonalQuestionHTML(question, questionWrapper) {
     answersDiv.appendChild(answerEl);
   }
 
+  console.log('APPENDING:', questionElement, question)
   questionWrapper.appendChild(questionElement);
   return questionElement;
 }
@@ -430,6 +431,7 @@ function generateMainQuestionHTML(question, questionWrapper) {
     answersDiv.appendChild(answerEl);
   }
 
+  console.log('APPENDING:', questionElement, question)
   questionWrapper.appendChild(questionElement);
   return questionElement;
 }
