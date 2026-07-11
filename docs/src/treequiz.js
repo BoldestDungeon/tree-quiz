@@ -24,23 +24,26 @@ const baseURL = '/tree-quiz';
 let translation = { default: {} };
 let questionList = {};
 let photoList = [];
+let knownTypes = [];
+let currentType;
+let currentID;
 
 
 function init(){
   const queryParams = new URLSearchParams(location.search);
-  const loadingElement = document.getElementById('loading');
+  currentType = queryParams.get('type');
+  currentID = queryParams.get('id');
+  const userLang = getUserLang();
 
   let translationRequest;
-  
   const defaultTranslationRequest = loadLanguage();
 
-  const userLang = getUserLang();
   if(userLang) {
     translationRequest = loadLanguage(userLang);
   }
 
-  const questionRequest = loadQuestionSet(queryParams.get('type'));
-  const photoRequest = loadPhotoList(queryParams.get('id'));
+  const questionRequest = loadQuestionSet(currentType);
+  const photoRequest = loadPhotoList(currentID);
 
   const allRequests = [
     translationRequest,
@@ -51,6 +54,7 @@ function init(){
 
   Promise.all(allRequests).then(() => {
     populateLanguageSelect();
+    generateKnownTreeTypes();
     generateQuestionHTML();
     setDataSheetLinks();
     applyTranslation();
@@ -213,9 +217,11 @@ function processQuestionCSV(dataStr, treeID) {
     name: null, 
     synonyms: [], 
     mainImage: null, 
-    dataSheetURL: null 
+    dataSheetURL: null,
+    totalTreeCount: 0,
   };
   const dataArr = dataStr.split('\n').reduce(processQuestionCSVLine, dataStructure);
+  saveTreeTypeCount(currentType, dataArr.totalTreeCount);
   
   for(let i=0; i<dataArr.questions.length; i++) {
     const question = dataArr.questions[i];
@@ -239,6 +245,12 @@ function processQuestionCSVLine(arr, line, index){
     console.error('NO TREE ID PROVIDED!')
   }
   parsedLine = line.split(',');
+
+  // Nothing to do if we don't have an index filled in
+  if(!parsedLine[ID_COLUMN_INDEX]) {
+    return arr;
+  }
+  arr.totalTreeCount++;
   parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX]);
   arr.dataLines.push(parsedLine);
 
@@ -269,6 +281,7 @@ function processQuestionCSVLine(arr, line, index){
       saveTranslationKey('tree_name', parsedLine[TREE_NAME_COLUMN_INDEX]);
       saveTranslationKey('tree_synonyms', generateSynonymText(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX], true));
       saveTranslationKey('correct_answer_' + questionIndex, arr.questions[questionIndex].correctAnswer);
+      saveVisit(currentType, treeID);
     }
     else if(arr.questions[questionIndex]) {
       // Not the current tree. If we have answers and images, add them to the incorrect answer list
@@ -289,7 +302,7 @@ function processQuestionCSVLine(arr, line, index){
           ids: [parsedLine[ID_COLUMN_INDEX]],
         });
       }
-      saveTranslationKey(`answer_${questionIndex}_${parsedLine[ID_COLUMN_INDEX]}`, parsedLine[questionIndex]);
+      saveTranslationKey(`answer_${questionIndex}_${parsedLine[ID_COLUMN_INDEX]}`, parsedLine[i].trim());
     }
     if(index > 0) {
       saveTranslationKey('tree_name_' + parsedLine[ID_COLUMN_INDEX], parsedLine[TREE_NAME_COLUMN_INDEX]);
@@ -537,6 +550,10 @@ function goToIdentifyPage(evt) {
 }
 function goToSeasonalSelection(evt){}
 
+function submitIdentificationAnswer() {
+  showSection('results');
+}
+
 function showSection(sectionID) {
   const targetSection = document.getElementById(sectionID);
   if(!targetSection) {
@@ -559,11 +576,57 @@ function setDataSheetLinks() {
   }
 }
 
+function generateKnownTreeTypes() {
+  for(let key in translation.default) {
+    if(key.indexOf('tree_type_') !==0) {
+      continue;
+    }
+    const treeType = key.replace('tree_type_', '');
+    knownTypes.push(treeType);
+  }
+
+  const trackerElement = document.getElementById('progress_tracker');
+  if(!trackerElement) {
+    return;
+  }
+  for(let i=0; i < knownTypes.length; i++) {
+    const type = knownTypes[i];
+    const progressElement = document.createElement('p');
+    const count = getUniqueTreesFoundCount(type);
+    const visitData = getKnownTrees();
+    
+    const foundSpan = document.createElement('span');
+    foundSpan.className = 'found_count';
+    foundSpan.innerText = count;
+    progressElement.appendChild(foundSpan);
+    
+    if(count > 0) {
+      const dividerSpan = document.createElement('span');
+      dividerSpan.className = 'found_divider';
+      dividerSpan.dataset.languageKey = 'progress_out_of';
+      progressElement.appendChild(dividerSpan);
+
+      const totalSpan = document.createElement('span');
+      totalSpan.className = 'tree_total';
+      totalSpan.innerText = visitData[type].count || 0;
+      progressElement.appendChild(totalSpan);
+    }
+
+    const typeNameSpan = document.createElement('span');
+    typeNameSpan.className = 'tree_type_name';
+    typeNameSpan.dataset.languageKey = `tree_type_${type}`;
+    progressElement.appendChild(typeNameSpan);
+
+    trackerElement.appendChild(progressElement);
+  }
+}
+
 function saveVisit(type, treeID) {
   const loggedVisits = JSON.parse(localStorage.getItem('visit_log') || '{}');
   loggedVisits[type] = loggedVisits[type] || {};
-  loggedVisits[type][treeID] = loggedVisits[type][treeID] || [];
-  loggedVisits[type][treeID].push(new Date().toISOString());
+  loggedVisits[type].trees = loggedVisits[type].trees || {};
+  loggedVisits[type].trees[treeID] = loggedVisits[type][treeID] || [];
+  loggedVisits[type].trees[treeID].push(new Date().toISOString());
   
   localStorage.setItem('visit_log', JSON.stringify(loggedVisits));
 }
@@ -574,6 +637,25 @@ function getUniqueTreesFoundCount(type) {
     return 0;
   }
   return Object.keys(loggedVisits[type]).length;
+}
+
+function saveTreeTypeCount(type, count) {
+  const knownTreeTypes = JSON.parse(localStorage.getItem('visit_log') || '{}');
+  knownTreeTypes[type] = knownTreeTypes[type] || {};
+  knownTreeTypes[type].count = count;
+}
+
+function getKnownTrees() {
+  const knownTreeTypes = JSON.parse(localStorage.getItem('visit_log') || {});
+  return knownTreeTypes;
+}
+
+function setTreeVisitTranslationKeys() {
+  const knownTreeTypes = getKnownTrees();
+  for(let type in knownTreeTypes) {
+    saveTranslationKey(`trees_total_${type}`, knownTreeTypes[type].count);
+    saveTranslationKey(`trees_found_${type}`, knownTreeTypes[type].trees.length);
+  }
 }
 
 init();

@@ -13,6 +13,10 @@ quiz_identify_heading,What Plant am I?
 quiz_identify_submit,Submit
 answer_synonym_joiner,","
 answer_final_synonym_joiner,and
+result_synonym_heading,Also known as:
+progress_title,You have found:
+progress_out_of,/
+
 tree_type_deciduous,deciduous
 tree_type_coniferous,coniferous
 
