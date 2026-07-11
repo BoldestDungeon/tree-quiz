@@ -374,11 +374,16 @@ function generateQuestionHTML() {
     return;
   }
 
+  let hasAnySeasonalQuestions = false;
   for(let i=0; i<questionList.questions.length; i++) {
     const question = questionList.questions[i];
 
     if (question.isSeasonal) {
       questionHTML = generateSeasonalQuestionHTML(question, questionWrapper);
+      if(!hasAnySeasonalQuestions) {
+        hasAnySeasonalQuestions = true;
+        generateSeasonalQuestionToggle();
+      }
     }
     else {
       questionHTML = generateMainQuestionHTML(question, questionWrapper);
@@ -407,6 +412,7 @@ function generateSeasonalQuestionHTML(question, questionWrapper) {
     const answerEl = document.createElement('button');
     answerEl.type = 'button';
     answerEl.className = 'answer seasonal';
+    if(answerObj.correct) { answerEl.classList.add('correct'); }
     answerEl.addEventListener('click', answerObj.onSelect);
 
     const answerImg = document.createElement('img');
@@ -431,6 +437,8 @@ function generateMainQuestionHTML(question, questionWrapper) {
   if(!question.prompt || !question.correctAnswer) {
     return null;
   }
+  generateQuestionToggle(question.index);
+
   const answers = generateMultipleChoice(question);
   const questionElement = document.createElement('div');
   questionElement.className = 'question main';
@@ -453,6 +461,7 @@ function generateMainQuestionHTML(question, questionWrapper) {
     const answerEl = document.createElement('button');
     answerEl.type = 'button';
     answerEl.className = 'answer';
+    if(answerObj.correct) { answerEl.classList.add('correct'); }
     answerEl.addEventListener('click', answerObj.onSelect);
 
     const answerText = document.createElement('span');
@@ -466,6 +475,24 @@ function generateMainQuestionHTML(question, questionWrapper) {
   questionElement.appendChild(answersDiv);
   questionWrapper.appendChild(questionElement);
   return questionElement;
+}
+
+function generateSeasonalQuestionToggle() {
+  generateQuestionToggle('seasonal');
+}
+
+function generateQuestionToggle(id) {
+  const questionWrapper = document.getElementById('quiz_main');
+  if(!questionWrapper) {
+    console.error('COULD NOT FIND QUIZ WRAPPER!');
+    return;
+  }
+
+  const seasonalToggle = document.createElement('button');
+  seasonalToggle.classList = 'question_toggle';
+  seasonalToggle.dataset.questionId = id;
+  seasonalToggle.addEventListener('click', showQuestion);
+  questionWrapper.appendChild(seasonalToggle);
 }
 
 function saveTranslationKey(key, value, lang){
@@ -493,15 +520,18 @@ function generateMultipleChoice(question) {
     position: Math.random(),
     onSelect: onCorrectAnswerSelected,
     image: question.image,
+    correct: true,
   });
 
   // Prepare all of our wrong answer objects
   let incorrectCandidates = question.incorrectAnswers.map(function(answer, index){
+    const translationTreeID = answer.ids[parseInt(answer.ids.length * Math.random())];
     return {
-      languageKey: `incorrect_answer_${question.index}_${index}`,
+      languageKey: `incorrect_answer_${question.index}_${translationTreeID}`,
       position: Math.random(),
       onSelect: onIncorretAnswerSelected,
       image: answer.images[parseInt(Math.random() * answer.images.length)],
+      correct: false,
     }
   });
 
@@ -519,8 +549,30 @@ function generateMultipleChoice(question) {
   });
 }
 
-function onCorrectAnswerSelected(evt) {}
-function onIncorretAnswerSelected(evt) {}
+function onCorrectAnswerSelected(evt) {
+  const target = evt.target;
+  const questionId = target.dataset.questionId;
+  if(target.classList.includes('locked')) {
+    return;
+  }
+
+  target.classList.add('correct-selected');
+  lockQuestion(questionId);
+}
+function onIncorretAnswerSelected(evt) {
+  const target = evt.target;
+  const questionId = target.dataset.questionId;
+  if(target.classList.includes('locked')) {
+    return;
+  }
+
+  target.classList.add('incorrect-selected');
+  lockQuestion(questionId);
+}
+
+function lockQuestion(questionId) {
+  return;
+}
 
 function goToLandingPage() {
   showSection('landing')
@@ -563,6 +615,28 @@ function showSection(sectionID) {
   const currentSection = document.querySelector('section.active');
   currentSection && currentSection.classList.remove('active');
   targetSection.classList.add('active');
+}
+
+function showQuestion(evt) {
+  const target = evt.target;
+  const questionId = target.dataset.questionId;
+  const questionElement = document.getElementById(`question_${questionId}`);
+
+  if(!questionElement) {
+    console.error('COULD NOT FIND QUESTION WITH ID:', questionId);
+    return;
+  }
+
+  target.classList.add('active');
+  questionElement.classList.add('active');
+}
+
+function hideQuestion(id) {
+  const toggle = document.querySelector(`[data-question-id=${id}]`);
+  const question = document.getElementById(`question_${questionId}`);
+
+  toggle && toggle.classList.remove('active');
+  question && question.classList.remove('active');
 }
 
 function setDataSheetLinks() {
