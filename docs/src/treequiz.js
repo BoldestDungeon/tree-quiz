@@ -222,7 +222,7 @@ function processQuestionCSV(dataStr, treeID) {
     question.incorrectAnswers = question.incorrectAnswers.filter( wrongAnswer => (wrongAnswer.text && wrongAnswer.text.toLowerCase() !== (question.correctAnswer || '').toLowerCase()));
 
     for(let a=0; a<question.incorrectAnswers.length; a++) {
-      translation.default[`incorrect_answer_${i}_${a}`] = question.incorrectAnswers[a].text;
+      saveTranslationKey(`incorrect_answer_${i}_${a}`, question.incorrectAnswers[a].text);
     }
   }
   return dataArr;
@@ -266,9 +266,9 @@ function processQuestionCSVLine(arr, line, index){
       arr.synonyms = parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX];
       arr.dataSheetURL = parsedLine[DATA_SHEET_COLUMN_INDEX];
 
-      translation.default.tree_name = parsedLine[TREE_NAME_COLUMN_INDEX];
-      translation.default.tree_synonyms = generateSynonymText(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX], true);
-      translation.default['correct_answer_' + questionIndex] = arr.questions[questionIndex].correctAnswer;
+      saveTranslationKey('tree_name', parsedLine[TREE_NAME_COLUMN_INDEX]);
+      saveTranslationKey('tree_synonyms', generateSynonymText(parsedLine[TREE_ALTERNATE_NAMES_COLUMN_INDEX], true));
+      saveTranslationKey('correct_answer_' + questionIndex, arr.questions[questionIndex].correctAnswer);
     }
     else if(arr.questions[questionIndex]) {
       // Not the current tree. If we have answers and images, add them to the incorrect answer list
@@ -278,12 +278,21 @@ function processQuestionCSVLine(arr, line, index){
         // If this is a repeat answer, just save the image if we have one
         if(parsedLine[i+1]) {
           question.incorrectAnswers[existingAnswerIndex].images.push(parsedLine[i+1]);
+          question.incorrectAnswers[existingAnswerIndex].ids.push(parsedLine[ID_COLUMN_INDEX]);
         }
       }
       else {
         const answerText = parsedLine[i].trim();
-        question.incorrectAnswers.push({text: answerText, images: [parsedLine[i+1]]});
+        question.incorrectAnswers.push({
+          text: answerText, 
+          images: [parsedLine[i+1]],
+          ids: [parsedLine[ID_COLUMN_INDEX]],
+        });
       }
+      saveTranslationKey(`answer_${questionIndex}_${parsedLine[ID_COLUMN_INDEX]}`, parsedLine[questionIndex]);
+    }
+    if(index > 0) {
+      saveTranslationKey('tree_name_' + parsedLine[ID_COLUMN_INDEX], parsedLine[TREE_NAME_COLUMN_INDEX]);
     }
     questionIndex ++;
   }
@@ -548,6 +557,23 @@ function setDataSheetLinks() {
   for(let i=0; i<dataSheetLinks.length; i++){
     dataSheetLinks[i].href = `${baseURL}/datasheets/${questionList.dataSheetURL}`;
   }
+}
+
+function saveVisit(type, treeID) {
+  const loggedVisits = JSON.parse(localStorage.getItem('visit_log') || '{}');
+  loggedVisits[type] = loggedVisits[type] || {};
+  loggedVisits[type][treeID] = loggedVisits[type][treeID] || [];
+  loggedVisits[type][treeID].push(new Date().toISOString());
+  
+  localStorage.setItem('visit_log', JSON.stringify(loggedVisits));
+}
+
+function getUniqueTreesFoundCount(type) {
+  const loggedVisits = JSON.parse(localStorage.getItem('visit_log') || '{}');
+  if(!loggedVisits[type]) {
+    return 0;
+  }
+  return Object.keys(loggedVisits[type]).length;
 }
 
 init();
