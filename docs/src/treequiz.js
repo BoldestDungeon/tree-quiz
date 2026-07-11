@@ -611,6 +611,8 @@ function generateKnownTreeTypes() {
       totalSpan.innerText = visitData[type].count || 0;
       progressElement.appendChild(totalSpan);
     }
+    const spacer = document.createTextNode(' ');
+    progressElement.appendChild(spacer);
 
     const typeNameSpan = document.createElement('span');
     typeNameSpan.className = 'tree_type_name';
