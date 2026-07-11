@@ -638,7 +638,7 @@ function getUniqueTreesFoundCount(type) {
   if(!loggedVisits[type]) {
     return 0;
   }
-  return Object.keys(loggedVisits[type]).length;
+  return Object.keys(loggedVisits[type].trees).length;
 }
 
 function saveTreeTypeCount(type, count) {
