@@ -519,6 +519,7 @@ function goToIntroOrQuiz(evt) {
   if(lastVisit.getFullYear() === today.getFullYear() && lastVisit.getMonth() === today.getMonth() && lastVisit.getDate() === today.getDate() ) {
     return goToQuizPage(evt);
   }
+  localStorage.setItem('last_visit', today.toISOString());
   return goToIntroPage(evt);
 }
 function goToIdentifyPage(evt) {
