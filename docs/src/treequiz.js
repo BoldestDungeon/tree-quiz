@@ -534,7 +534,7 @@ function showSection(sectionID) {
     return;
   }
   const currentSection = document.querySelector('section.active');
-  currentSelection && currentSection.classList.remove('active');
+  currentSection && currentSection.classList.remove('active');
   targetSection.classList.add('active');
 }
 
