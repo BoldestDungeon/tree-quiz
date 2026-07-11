@@ -52,8 +52,8 @@ function init(){
   Promise.all(allRequests).then(() => {
     populateLanguageSelect();
     generateQuestionHTML();
+    setDataSheetLinks();
     applyTranslation();
-    loadingElement.classList.add('complete');
     goToLandingPage();
   });
 
