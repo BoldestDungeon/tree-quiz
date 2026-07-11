@@ -16,11 +16,11 @@ answer_final_synonym_joiner,and
 result_synonym_heading,Also known as:
 progress_title,You have found:
 progress_out_of,/
-
+,
 tree_type_deciduous,deciduous
 tree_type_coniferous,coniferous
-
-*** LANGUAGE SUPPORT ***
+,
+*** LANGUAGE SUPPORT ***,
 language_choice_en,English
 language_choice_es,Spanish
 language_choice_cmn,Mandarin
