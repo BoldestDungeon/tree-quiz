@@ -6,15 +6,15 @@
     <script type="text/javascript" src="/tree-quiz/src/treequiz.js" defer></script>
   </head>
   <body>
-    <section id="loading">
+    <section id="loading" class="active">
       <div class="loading"></div>
     </section>
     <section id="landing">
       <h1 data-language-key="landing_heading"></h1>
       <div class="main-actions">
         <a class="datasheet-link" href="" target="_blank" data-language-key="landing_datasheet_link"></a>
-        <button class="quiz-start" type="button" data-language-key="landing_start_quiz"></button>
-        <a class="homepage-link" href="" data-language-key="landing_homepage_link"></a>
+        <button class="quiz-start" type="button" data-language-key="landing_start_quiz" onclick="goToIntroOrQuiz"></button>
+        <a class="homepage-link" href="https://y.getyarn.io/88de01b7-e168-46ab-b165-79b5dc628b62.mp4" data-language-key="landing_homepage_link"></a>
         <div class="language-selection-wrapper">
           <label for="language-select" data-language-key="landing_languages"></label>
           <select id="language-select"></select>
@@ -26,7 +26,7 @@
       <div class="welcome_wrapper">
         <h2 class="welcome-heading" data-language-key="welcome_heading"></h2>
         <p class="welcome-body" data-language-key="welcome_text"></p>
-        <button class="welcome-dismiss" data-language-key="welcome_action"></button>
+        <button class="welcome-dismiss" data-language-key="welcome_action" onclick="goToQuizPage"></button>
       </div>
     </section>
 
@@ -36,7 +36,7 @@
 
       </div>
       <div class="quiz-footer">
-        <button class="quiz-main-continue" data-language-key="quiz_main_continue"></button>
+        <button class="quiz-main-continue" data-language-key="quiz_main_continue" onclick="goToIdentifyPage"></button>
       </div>
     </section>
 
@@ -46,6 +46,7 @@
 
       </div>
       <div class="identify-footer">
+        <input type="text" id="quiz_identify_input" />
         <button class="quiz-identify-submit" data-language-key="quiz_identify_submit"></button>
       </div>
     </section>

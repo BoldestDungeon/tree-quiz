@@ -44,11 +44,7 @@ section {
   }
 }
 
-section#loading:not(.complete) {
-  display: block;
-}
-
-#loading.complete ~ section {
+section.active {
   display: flex;
 }
 

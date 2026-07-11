@@ -54,6 +54,7 @@ function init(){
     generateQuestionHTML();
     applyTranslation();
     loadingElement.classList.add('complete');
+    goToLandingPage();
   });
 
 }
@@ -499,9 +500,19 @@ function generateMultipleChoice(question) {
 function onCorrectAnswerSelected(evt) {}
 function onIncorretAnswerSelected(evt) {}
 
-function goToQuizPage(evt) {}
-function goToIntroPage(evt) {}
+function goToLandingPage() {
+  showSection('landing')
+}
+function goToQuizPage(evt) {
+  evt && evt.preventDefault();
+  showSection('quiz_main');
+}
+function goToIntroPage(evt) {
+  evt && evt.preventDefault();
+  showSection('welcome');
+}
 function goToIntroOrQuiz(evt) {
+  evt && evt.preventDefault();
   const today = new Date();
   const lastVisit = new Date(localStorage.getItem('last_visit') || '2000-01-01');
 
@@ -510,6 +521,32 @@ function goToIntroOrQuiz(evt) {
   }
   return goToIntroPage(evt);
 }
+function goToIdentifyPage(evt) {
+  evt && evt.preventDefault();
+  showSection('quiz_identify');
+}
 function goToSeasonalSelection(evt){}
+
+function showSection(sectionID) {
+  const targetSection = document.getElementById(sectionID);
+  if(!targetSection) {
+    console.error('COULD NOT FIND SECTION:', sectionID);
+    return;
+  }
+  const currentSection = document.querySelector('section.active');
+  currentSelection && currentSection.classList.remove('active');
+  targetSection.classList.add('active');
+}
+
+function setDataSheetLinks() {
+  if(!questionList.dataSheetURL) {
+    console.error('DATA SHEET NOT AVAILALBLE!');
+    return;
+  }
+  const dataSheetLinks = document.querySelectorAll('a.datasheet-link');
+  for(let i=0; i<dataSheetLinks.length; i++){
+    dataSheetLinks[i].href = `${baseURL}/datasheets/${questionList.dataSheetURL}`;
+  }
+}
 
 init();
