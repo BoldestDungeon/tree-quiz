@@ -643,6 +643,7 @@ function saveTreeTypeCount(type, count) {
   const knownTreeTypes = JSON.parse(localStorage.getItem('visit_log') || '{}');
   knownTreeTypes[type] = knownTreeTypes[type] || {};
   knownTreeTypes[type].count = count;
+  localStorage.setItem('visit_log',JSON.stringify( knownTreeTypes));
 }
 
 function getKnownTrees() {
