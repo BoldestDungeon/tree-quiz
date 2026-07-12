@@ -483,7 +483,7 @@ function generateSeasonalQuestionToggle() {
 }
 
 function generateQuestionToggle(id) {
-  const questionWrapper = document.getElementById('quiz_main');
+  const questionWrapper = document.getElementById('quiz_content');
   if(!questionWrapper) {
     console.error('COULD NOT FIND QUIZ WRAPPER!');
     return;
