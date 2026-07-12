@@ -655,7 +655,7 @@ function setTreeImage() {
   const imageElements = document.querySelectorAll('.tree_image');
   const imgSrc = photoList[0]?.url;
   for(let i = 0; i < imageElements.length; i++) {
-    imageElements[i].src = imgSrc;
+    imageElements[i].src = baseURL + '/images/' + imgSrc;
   }
 }
 
