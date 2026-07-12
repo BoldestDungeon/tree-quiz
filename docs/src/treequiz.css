@@ -155,6 +155,10 @@ img {
   
 }
 
+.question:not(.active) {
+  display: none;
+}
+
 .answers_wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;

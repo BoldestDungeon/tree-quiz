@@ -58,6 +58,7 @@ function init(){
     generateQuestionHTML();
     setDataSheetLinks();
     applyTranslation();
+    setTreeImage();
     goToLandingPage();
   });
 
@@ -180,7 +181,7 @@ function parsePhotoList(responseText, treeID) {
     }
     photoArr.push(formatPhotoRow(rowArr));
   }
-  return photoArr;
+  return photoArr.sort(function(a, b) { return (b.start - a.start) });
 }
 
 function formatPhotoRow(csvRow) {
@@ -368,7 +369,7 @@ function onLanguageSelect(evt){
 }
 
 function generateQuestionHTML() {
-  const questionWrapper = document.getElementById('quiz_main');
+  const questionWrapper = document.getElementById('quiz_content');
   if(!questionWrapper) {
     console.error('COULD NOT FIND QUIZ WRAPPER!');
     return;
@@ -527,7 +528,7 @@ function generateMultipleChoice(question) {
   let incorrectCandidates = question.incorrectAnswers.map(function(answer, index){
     const translationTreeID = answer.ids[parseInt(answer.ids.length * Math.random())];
     return {
-      languageKey: `incorrect_answer_${question.index}_${translationTreeID}`,
+      languageKey: `answer_${question.index}_${translationTreeID}`,
       position: Math.random(),
       onSelect: onIncorretAnswerSelected,
       image: answer.images[parseInt(Math.random() * answer.images.length)],
@@ -647,6 +648,14 @@ function setDataSheetLinks() {
   const dataSheetLinks = document.querySelectorAll('a.datasheet-link');
   for(let i=0; i<dataSheetLinks.length; i++){
     dataSheetLinks[i].href = `${baseURL}/datasheets/${questionList.dataSheetURL}`;
+  }
+}
+
+function setTreeImage() {
+  const imageElements = document.querySelectorAll('.tree_image');
+  const imgSrc = photoList[0]?.url;
+  for(let i = 0; i < imageElements.length; i++) {
+    imageElements[i].src = imgSrc;
   }
 }
 
