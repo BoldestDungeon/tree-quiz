@@ -321,6 +321,30 @@ border: 0;
   border-radius: 50%;
 }
 
+.locked .answer.correct:not(correct-selected) {
+  background-color: var(--theme-secondary);
+  border-color: var(--theme-primary);
+  color: var(--theme-background);
+  text-shadow: 0px 0px 5px var(--theme-text);
+}
+.locked .answer.correct:not(correct-selected)::before {
+  content: '→';
+  border: 0.15em solid var(--theme-primary);
+  background-color: var(--theme-secondary);
+  color: var(--theme-background);
+  
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 2em;
+  height: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
 .quiz-footer {
   display: flex;
   justify-content: center;
