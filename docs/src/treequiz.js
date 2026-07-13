@@ -665,7 +665,7 @@ function showQuestion(evt) {
 }
 
 function hideQuestion(id) {
-  const toggle = document.querySelector(`[data-question-id=${id}]`);
+  const toggle = document.querySelector(`[data-question-id="${id}"]`);
   const question = document.getElementById(`question_${id}`);
 
   toggle && toggle.classList.remove('active');
