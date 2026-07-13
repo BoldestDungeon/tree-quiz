@@ -370,7 +370,7 @@ function populateLanguageSelect(){
 }
 
 function onLanguageSelect(evt){
-  const languageSelectEl = evt.target;
+  const languageSelectEl = evt.originalTarget;
   const lang = languageSelectEl.value;
   setUserLang(lang);
 }
@@ -581,29 +581,40 @@ function generateMultipleChoice(question) {
 }
 
 function onCorrectAnswerSelected(evt) {
-  const target = evt.target;
+  const target = evt.originalTarget;
   const questionId = target.dataset.questionId;
-  if(Array.from(target.classList).includes('locked')) {
+  const questionWrapper = document.getElementById(`question_${questionId}`);
+  if(Array.from(questionWrapper.classList).includes('locked')) {
     return;
   }
 
-  setTimeout(function(){ hideQuestion(questionId) }, 3000);
+  setTimeout(function(){ 
+    hideQuestion(questionId) 
+  }, 1000);
   target.classList.add('correct-selected');
   lockQuestion(questionId);
 }
 function onIncorretAnswerSelected(evt) {
-  const target = evt.target;
+  const target = evt.originalTarget;
   const questionId = target.dataset.questionId;
-  if(Array.from(target.classList).includes('locked')) {
+  const questionWrapper = document.getElementById(`question_${questionId}`);
+  if(Array.from(questionWrapper.classList).includes('locked')) {
     return;
   }
 
-  setTimeout(function(){ hideQuestion(questionId) }, 3000);
+  setTimeout(function(){ 
+    hideQuestion(questionId) 
+  }, 1000);
   target.classList.add('incorrect-selected');
   lockQuestion(questionId);
 }
 
 function lockQuestion(questionId) {
+  const questionWrapper = document.getElementById(`question_${questionId}`);
+  if(!questionWrapper) {
+    console.error('COULD NOT LOCK QUESTION!', questionId);
+  }
+  questionWrapper.classList.add('locked');
   return;
 }
 
@@ -651,7 +662,7 @@ function showSection(sectionID) {
 }
 
 function showQuestion(evt) {
-  const target = evt.target;
+  const target = evt.originalTarget;
   const questionId = target.dataset.questionId;
   const questionElement = document.getElementById(`question_${questionId}`);
 
