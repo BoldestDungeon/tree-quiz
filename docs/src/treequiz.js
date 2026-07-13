@@ -93,7 +93,7 @@ function loadLanguage(lang){
     });
 
     let questionRequest;
-    if(lang !== 'default') {
+    if(lang !== 'default' && lang !== 'en') {
       questionRequest = fetch(`${baseURL}/data/${currentType}.${lang}.csv`)
         .then(function(resp) { return resp.text() })
         .then(saveQuestionTranslation)
