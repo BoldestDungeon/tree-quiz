@@ -485,6 +485,7 @@ function generateSeasonalQuestionHTML(question, questionWrapper) {
     const answerEl = document.createElement('button');
     answerEl.type = 'button';
     answerEl.className = 'answer seasonal';
+    answerEl.dataset.questionId = question.index;
     if(answerObj.correct) { answerEl.classList.add('correct'); }
     answerEl.addEventListener('click', answerObj.onSelect);
 
