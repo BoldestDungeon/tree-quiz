@@ -104,6 +104,13 @@ section.active {
   margin-top: 0.5em;
 }
 
+.frontpage_image {
+  height: 25vh;
+  width: auto;
+  margin: 0 auto;
+  border-radius: 1em;
+}
+
 .welcome_wrapper {
   position: absolute;
   top: var(--question-margins);
