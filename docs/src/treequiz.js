@@ -559,6 +559,7 @@ function onCorrectAnswerSelected(evt) {
     return;
   }
 
+  setTimeout(function(){ hideQuestion(questionId) }, 3000);
   target.classList.add('correct-selected');
   lockQuestion(questionId);
 }
@@ -569,6 +570,7 @@ function onIncorretAnswerSelected(evt) {
     return;
   }
 
+  setTimeout(function(){ hideQuestion(questionId) }, 3000);
   target.classList.add('incorrect-selected');
   lockQuestion(questionId);
 }
