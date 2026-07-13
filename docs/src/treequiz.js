@@ -180,7 +180,7 @@ function saveQuestionTranslation(text){
       row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX]);
 
       saveTranslationKey(`tree_name_${treeID}`, row[TRANSLATION_TREE_NAME_COLUMN_INDEX], lang);
-      saveTranslationKey('tree_synonyms', generateSynonymText(row[TRANSLATION_TREE_ALTERNATE_NAMES_COLUMN_INDEX], false), lang);
+      saveTranslationKey('tree_synonyms', generateSynonymText(row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX], false), lang);
       let questionId = 0;
       for(let i=TRANSLATION_FIRST_QUESTION_COLUMN_INDEX; i<row.length; i++) {
         saveTranslationKey(`answer_${questionId}_${treeID}`, row[i], lang);
