@@ -167,6 +167,8 @@ function saveQuestionTranslation(text){
   
   for(let r=0; r < rows.length; r++) {
     const row = rows[r].split(',');
+    if(!row || !row[TRANSLATION_ID_COLUMN_INDEX]) { continue; }
+
     if(r === 0) {
       // Header row: Save question text
       let questionId = 0;
@@ -177,7 +179,7 @@ function saveQuestionTranslation(text){
     }
     else {
       const treeID = row[TRANSLATION_ID_COLUMN_INDEX];
-      row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX]);
+      row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX] || '');
 
       saveTranslationKey(`tree_name_${treeID}`, row[TRANSLATION_TREE_NAME_COLUMN_INDEX], lang);
       saveTranslationKey('tree_synonyms', generateSynonymText(row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX], false), lang);
