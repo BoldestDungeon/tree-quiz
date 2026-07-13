@@ -457,7 +457,8 @@ function generateSeasonalQuestionPrompt(index, questionId) {
   const button = document.createElement('button');
   button.classList = 'answer';
   button.dataset.languageKey = `${currentType}_seasonal_button_${index}`;
-  button.addEventListener('click', function(){ showQuestion(questionId) });
+  button.dataset.questionId = questionId;
+  button.addEventListener('click', showQuestion);
 
   wrapper.insertBefore(button, wrapper.children[wrapper.children.length-1]);
 }
