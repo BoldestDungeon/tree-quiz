@@ -590,7 +590,7 @@ function onCorrectAnswerSelected(evt) {
 
   setTimeout(function(){ 
     hideQuestion(questionId) 
-  }, 1000);
+  }, 3000);
   target.classList.add('correct-selected');
   lockQuestion(questionId);
 }
@@ -604,7 +604,7 @@ function onIncorretAnswerSelected(evt) {
 
   setTimeout(function(){ 
     hideQuestion(questionId) 
-  }, 1000);
+  }, 3000);
   target.classList.add('incorrect-selected');
   lockQuestion(questionId);
 }
