@@ -10,6 +10,13 @@ const FIRST_QUESTION_COLUMN_INDEX = 4;
 // TODO: Make this dynamic based on which CSV file we loaded
 const FIRST_SEASONAL_QUESTION_COLUMN_INDEX = 10; 
 
+// TRANSLATIONS OF QUESTIONS
+// Expected to be the same as the default translation, but without pictures or download links
+const TRANSLATION_ID_COLUMN_INDEX = 0;
+const TRANSLATION_TREE_NAME_COLUMN_INDEX = 1;
+const TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX = 2;
+const TRANSLATION_FIRST_QUESTION_COLUMN_INDEX = 3;
+
 // HOW MANY INCORRECT CHOICES SHOULD BE SHOWN WITH EACH QUESTION? 
 const MAX_INCORRECT_ANSWERS = 3;
 
@@ -75,7 +82,7 @@ function loadLanguage(lang){
     return Promise.resolve(translation[lang]);
   }
 
-  return fetch(`${baseURL}/data/language.${lang === 'en' ? 'default' : lang}.csv`)
+  const mainRequest = fetch(`${baseURL}/data/language.${lang === 'en' ? 'default' : lang}.csv`)
     .then(function(resp){ return resp.text() })
     .then(parseLanguageCSV)
     .then(function(language){ 
@@ -84,6 +91,15 @@ function loadLanguage(lang){
       }
       return language;
     });
+
+    let questionRequest;
+    if(lang !== 'default') {
+      questionRequest = fetch(`${baseURL}/data/${currentType}.${lang}.csv`)
+        .then(function(resp) { return resp.text() })
+        .then(saveQuestionTranslation)
+    }
+
+  return Promise.all([[mainRequest, questionRequest]]);
 }
 
 function setUserLang(lang) {
@@ -145,9 +161,37 @@ function loadQuestionSet(type) {
     });
 }
 
-function loadQuestionTranslations(type){
+function saveQuestionTranslation(text){
   const lang = getUserLang();
-  // TODO;
+  const rows = text.split('\n');
+  
+  for(let r=0; r < rows.length; r++) {
+    const row = rows[r].split(',');
+    if(r === 0) {
+      // Header row: Save question text
+      let questionId = 0;
+      for(let i=TRANSLATION_FIRST_QUESTION_COLUMN_INDEX; i<row.length; i++) {
+        saveTranslationKey(`question_prompt_${questionId}`, row[i], lang);
+        questionId ++;
+      }
+    }
+    else {
+      const treeID = row[TRANSLATION_ID_COLUMN_INDEX];
+      row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX] = generateSynonyms(row[TRANSLATION_ALTERNATE_NAMES_COLUMN_INDEX]);
+
+      saveTranslationKey(`tree_name_${treeID}`, row[TRANSLATION_TREE_NAME_COLUMN_INDEX], lang);
+      saveTranslationKey('tree_synonyms', generateSynonymText(row[TRANSLATION_TREE_ALTERNATE_NAMES_COLUMN_INDEX], false), lang);
+      let questionId = 0;
+      for(let i=TRANSLATION_FIRST_QUESTION_COLUMN_INDEX; i<row.length; i++) {
+        saveTranslationKey(`answer_${questionId}_${treeID}`, row[i], lang);
+        if(treeID === row[TRANSLATION_ID_COLUMN_INDEX]) {
+          saveTranslationKey(`correct_answer_${questionId}`, row[i], lang);
+        }
+        questionId++;
+      }
+    }
+  }
+  return translation[lang];
 }
 
 function loadPhotoList(treeID){
