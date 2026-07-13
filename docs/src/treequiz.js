@@ -615,6 +615,9 @@ function lockQuestion(questionId) {
     console.error('COULD NOT LOCK QUESTION!', questionId);
   }
   questionWrapper.classList.add('locked');
+  questionWrapper.addEventListener('click', function(evt){
+    hideQuestion(questionId);
+  })
   return;
 }
 
