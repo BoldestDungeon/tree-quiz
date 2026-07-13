@@ -741,6 +741,12 @@ function showQuestion(evt) {
     return;
   }
 
+  // Hide any open question
+  const currentOpenQuestion = document.querySelector('.question.active');
+  if(currentOpenQuestion) {
+    hideQuestion(currentOpenQuestion.id);
+  }
+
   target.classList.add('active');
   questionElement.classList.add('active');
 }
