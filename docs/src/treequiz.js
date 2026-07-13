@@ -399,6 +399,7 @@ function generateSeasonalQuestionHTML(question, questionWrapper) {
   const answers = generateMultipleChoice(question);
   const questionElement = document.createElement('div');
   questionElement.className = 'question seasonal';
+  questionElement.id = `question_${question.index}`
 
   const headingElement = document.createElement('h3');
   headingElement.className = 'question_heading';
@@ -443,6 +444,7 @@ function generateMainQuestionHTML(question, questionWrapper) {
   const answers = generateMultipleChoice(question);
   const questionElement = document.createElement('div');
   questionElement.className = 'question main';
+  questionElement.id = `question_${question.index}`
 
   const headingElement = document.createElement('h3');
   headingElement.className = 'question_heading';

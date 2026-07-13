@@ -8,6 +8,8 @@ welcome_heading,Welcome to the NDSU Woody Plant Quiz!
 welcome_text,This quiz was developed to help teach you how to identify key features on woody plants. Click on each feature of the tree to practice your identification skills then submit your answer.
 welcome_action,Continue
 quiz_main_heading,Can You Identify Me?
+quiz_seasonal_heading,Can you see one of these features?
+quiz_seasonal_close,I don't see any of these
 quiz_main_continue,I Know It!
 quiz_identify_heading,What Plant am I?
 quiz_identify_submit,Submit
