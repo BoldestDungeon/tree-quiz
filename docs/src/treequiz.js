@@ -92,7 +92,7 @@ function loadLanguage(lang){
       return language;
     });
 
-    let questionRequest;
+    let questionRequest = Promise.resolve(translation[lang]);
     if(lang !== 'default' && lang !== 'en') {
       questionRequest = fetch(`${baseURL}/data/${currentType}.${lang}.csv`)
         .then(function(resp) { return resp.text() })
