@@ -175,7 +175,7 @@ img {
   display: none;
 }
 
-#question_seasonal,
+#question_seasonal.active,
 .answers_wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
