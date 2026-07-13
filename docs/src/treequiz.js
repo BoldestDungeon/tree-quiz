@@ -555,7 +555,7 @@ function generateMultipleChoice(question) {
 function onCorrectAnswerSelected(evt) {
   const target = evt.target;
   const questionId = target.dataset.questionId;
-  if(target.classList.includes('locked')) {
+  if(Array.from(target.classList).includes('locked')) {
     return;
   }
 
@@ -565,7 +565,7 @@ function onCorrectAnswerSelected(evt) {
 function onIncorretAnswerSelected(evt) {
   const target = evt.target;
   const questionId = target.dataset.questionId;
-  if(target.classList.includes('locked')) {
+  if(Array.from(target.classList).includes('locked')) {
     return;
   }
 
