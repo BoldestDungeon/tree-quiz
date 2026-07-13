@@ -256,18 +256,25 @@ function processQuestionCSVLine(arr, line, index){
   arr.dataLines.push(parsedLine);
 
   let questionIndex = 0;
+  let seasonalIndex = 0;
   // We expect all question columns to come in pairs (question + image)
   for(let i=FIRST_QUESTION_COLUMN_INDEX; i<parsedLine.length; i+=2) {
     if(index === 0) {
       // First row. Set up all the questions using the column headers.
+      const isSeasonal = i>= FIRST_SEASONAL_QUESTION_COLUMN_INDEX;
       const questionData = { 
         prompt: parsedLine[i], 
         correctAnswer: null, 
         image: '', 
         incorrectAnswers: [], 
-        isSeasonal: i>= FIRST_SEASONAL_QUESTION_COLUMN_INDEX,
+        isSeasonal: isSeasonal,
         index: questionIndex,
       };
+      if(isSeasonal) {
+        questionData.seasonalId = seasonalIndex;
+        seasonalIndex++;
+      }
+
       arr.questions.push(questionData);
       translation.default['question_prompt_' + questionIndex] = questionData.prompt;
     }
@@ -380,11 +387,11 @@ function generateQuestionHTML() {
     const question = questionList.questions[i];
 
     if (question.isSeasonal) {
-      questionHTML = generateSeasonalQuestionHTML(question, questionWrapper);
       if(!hasAnySeasonalQuestions) {
         hasAnySeasonalQuestions = true;
         generateSeasonalQuestionToggle();
       }
+      questionHTML = generateSeasonalQuestionHTML(question, questionWrapper);
     }
     else {
       questionHTML = generateMainQuestionHTML(question, questionWrapper);
@@ -433,6 +440,26 @@ function generateSeasonalQuestionHTML(question, questionWrapper) {
   questionElement.appendChild(answersDiv);
   questionWrapper.appendChild(questionElement);
   return questionElement;
+}
+
+function generateSeasonalQuestionButton(question) {
+  const parentElement = document.getElementById('question_seasonal');
+  if(!parentElement) {
+    console.error('COULD NOT FIND WRAPPER FOR SEASONAL QUESTION PROMPTS');
+    return;
+  }
+  const button = document.createElement('button');
+  button.className = 'answer seasonal_question_select';
+  button.dataset.questionId = question.index;
+  button.type = 'button';
+  button.addEventListener('click', showQuestion)
+
+  const buttonText = document.createElement('span');
+  buttonText.className = 'answer_text';
+  buttonText.dataset.languageKey = `seasonal_prompt_${question.seasonalIndex}`
+  button.appendChild(buttonText);
+
+  parentElement.appendChild(button);
 }
 
 function generateMainQuestionHTML(question, questionWrapper) {
