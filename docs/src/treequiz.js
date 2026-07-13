@@ -429,6 +429,7 @@ function generateQuestionHTML() {
   }
 
   let hasAnySeasonalQuestions = false;
+  let seasonalIndex = 1;
   for(let i=0; i<questionList.questions.length; i++) {
     const question = questionList.questions[i];
 
@@ -437,12 +438,28 @@ function generateQuestionHTML() {
         hasAnySeasonalQuestions = true;
         generateSeasonalQuestionToggle();
       }
+      generateSeasonalQuestionPrompt(seasonalIndex, question.index);
       questionHTML = generateSeasonalQuestionHTML(question, questionWrapper);
+      seasonalIndex++;
     }
     else {
       questionHTML = generateMainQuestionHTML(question, questionWrapper);
     }    
   }
+}
+
+function generateSeasonalQuestionPrompt(index, questionId) {
+  const wrapper = document.getElementById('question_seasonal');
+  if(!wrapper) {
+    console.error('COULD NOT FIND SEASONAL QUESTION WRAPPER');
+    return;
+  }
+  const button = document.createElement('button');
+  button.classList = 'answer';
+  button.translationKey = `${currentType}_seasonal_button_${index}`;
+  button.addEventListener('click', function(){ showQuestion(questionId) });
+
+  wrapper.insertBefore(button, wrapper.children[wrapper.children.length-1]);
 }
 
 function generateSeasonalQuestionHTML(question, questionWrapper) {
@@ -555,7 +572,7 @@ function generateMainQuestionHTML(question, questionWrapper) {
 }
 
 function generateSeasonalQuestionToggle() {
-  generateQuestionToggle('seasonal');
+  const button = generateQuestionToggle('seasonal');
 }
 
 function generateQuestionToggle(id) {
@@ -565,11 +582,11 @@ function generateQuestionToggle(id) {
     return;
   }
 
-  const seasonalToggle = document.createElement('button');
-  seasonalToggle.classList = 'question_toggle';
-  seasonalToggle.dataset.questionId = id;
-  seasonalToggle.addEventListener('click', showQuestion);
-  questionWrapper.appendChild(seasonalToggle);
+  const questionToggle = document.createElement('button');
+  questionToggle.classList = 'question_toggle';
+  questionToggle.dataset.questionId = id;
+  questionToggle.addEventListener('click', showQuestion);
+  questionWrapper.appendChild(questionToggle);
 }
 
 function saveTranslationKey(key, value, lang){

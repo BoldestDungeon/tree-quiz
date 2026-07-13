@@ -9,7 +9,6 @@ welcome_text,This quiz was developed to help teach you how to identify key featu
 welcome_action,Continue
 quiz_main_heading,Can You Identify Me?
 quiz_seasonal_heading,Can you see one of these features?
-quiz_seasonal_close,I don't see any of these
 quiz_main_continue,I Know It!
 quiz_identify_heading,What Plant am I?
 quiz_identify_submit,Submit
@@ -21,6 +20,14 @@ progress_out_of,/
 ,
 tree_type_deciduous,deciduous
 tree_type_coniferous,coniferous
+,
+*** SEASONAL QUESTION BUTTONS ***,
+deciduous_seasonal_button_1,Flowers
+deciduous_seasonal_button_2,Fruit/Seed
+deciduous_seasonal_button_3,Fall Colour
+coniferous_seasonal_button_1,
+quiz_seasonal_close,I don't see any of these
+
 ,
 *** LANGUAGE SUPPORT ***,
 language_choice_en,English
