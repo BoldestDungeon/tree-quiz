@@ -376,6 +376,10 @@ border: 0;
   margin: 0.25em auto;
 }
 
+.tree_type_name {
+  padding-left: 1ch;
+}
+
 .final-actions {
   display: grid;
   grid-gap: 1em;
