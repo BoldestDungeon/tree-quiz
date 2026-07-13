@@ -370,7 +370,7 @@ function populateLanguageSelect(){
 }
 
 function onLanguageSelect(evt){
-  const languageSelectEl = evt.originalTarget;
+  const languageSelectEl = evt.currentTarget;
   const lang = languageSelectEl.value;
   setUserLang(lang);
 }
@@ -581,7 +581,7 @@ function generateMultipleChoice(question) {
 }
 
 function onCorrectAnswerSelected(evt) {
-  const target = evt.originalTarget;
+  const target = evt.currentTarget;
   const questionId = target.dataset.questionId;
   const questionWrapper = document.getElementById(`question_${questionId}`);
   if(Array.from(questionWrapper.classList).includes('locked')) {
@@ -595,7 +595,7 @@ function onCorrectAnswerSelected(evt) {
   lockQuestion(questionId);
 }
 function onIncorretAnswerSelected(evt) {
-  const target = evt.originalTarget;
+  const target = evt.currentTarget;
   const questionId = target.dataset.questionId;
   const questionWrapper = document.getElementById(`question_${questionId}`);
   if(Array.from(questionWrapper.classList).includes('locked')) {
@@ -662,7 +662,7 @@ function showSection(sectionID) {
 }
 
 function showQuestion(evt) {
-  const target = evt.originalTarget;
+  const target = evt.currentTarget;
   const questionId = target.dataset.questionId;
   const questionElement = document.getElementById(`question_${questionId}`);
 
