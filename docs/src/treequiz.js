@@ -493,6 +493,7 @@ function generateMainQuestionHTML(question, questionWrapper) {
     answerEl.className = 'answer';
     if(answerObj.correct) { answerEl.classList.add('correct'); }
     answerEl.addEventListener('click', answerObj.onSelect);
+    answerEl.dataset.questionId = question.index;
 
     const answerText = document.createElement('span');
     answerText.className = 'answer_text';
