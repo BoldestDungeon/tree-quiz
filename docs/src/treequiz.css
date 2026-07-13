@@ -75,7 +75,11 @@ section.active {
 }
 
 .main-actions a,
-.main-actions button {
+.main-actions button,
+.final-actions a,
+.final-actions button,
+.quiz-main-continue,
+.quiz-identify-submit {
   background: var(--theme-secondary);
   color: var(--theme-primary);
   font-size: 2.5rem;
@@ -155,7 +159,7 @@ img {
   border: 0.25em solid var(--theme-secondary);
   border-radius: 1.5em;
   overflow-y: auto;
-  
+  z-index: 1;
 }
 
 .question:not(.active) {
@@ -197,8 +201,60 @@ img {
   top: 0;
   left: 0;
   
-/*   border: 0; */
+  transform: translateX(-50%) translateY(-50%);
+  
+border: 0;
   background-color: transparent;
+  background-image: url('/tree-quiz/src/icons/MGlass_Lens.png');
+  background-size: contain, 40%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-blend-mode: normal;
+  filter: invert(0.75) hue-rotate(45deg) drop-shadow(0 0 0.1em black);
+}
+.question_toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/tree-quiz/src/icons/MGlass_Ding.png');
+  background-size: 30% 30%;
+  background-position: center 40%;
+  background-repeat: no-repeat;
+  mix-blend-mode: hard-light;
+  opacity: 0.5;
+}
+.question_toggle::after {
+  content: '';
+  position: absolute;
+  height: 75%;
+  width: 100%;
+  bottom: -75%;
+  left: 74%;
+  background-image: url('/tree-quiz/src/icons/MGlass_Handle.png');
+  background-size: contain;
+  filter: hue-rotate(45deg);
+  mask-clip: url('/tree-quiz/src/icons/MGlass_Handle.png');
+  background-repeat: no-repeat;
+}
+
+.question_toggle[data-question-id="seasonal"] {
+  top: 55%;
+  left: 20%;
+}
+.question_toggle[data-question-id="0"] {
+  left:34%;
+  top: 34%;
+}
+.question_toggle[data-question-id="1"] {
+  left: 65%;
+  top: 44%;
+}
+.question_toggle[data-question-id="2"] {
+  left: 48%;
+  top: 78%;
 }
 
 .answer {
@@ -210,6 +266,41 @@ img {
   background: var(--theme-background);
   padding: 0;
   margin: 0;
+}
+
+.quiz-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.identify_image {
+  opacity: 0.8;
+}
+
+.identify-wrapper,
+.identify-footer,
+#progress_tracker p {
+  display: flex;
+  justify-content: center;
+}
+#quiz_identify_input {
+  position: relative;
+  top: -200%;
+  font-size: 4rem;
+  width: 90%;
+  border-radius: 0.5em;
+  padding: 0.25em 0.5em;
+}
+
+.synonym-list {
+  width: 80%;
+  margin: 0.25em auto;
+}
+
+.final-actions {
+  display: grid;
+  grid-gap: 1em;
+  text-align: center;
 }
 
 @keyframes spin {
