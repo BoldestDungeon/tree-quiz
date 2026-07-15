@@ -232,10 +232,12 @@ img {
   filter: drop-shadow(0 0 0.1em black);
 }
 
-.question_toggle.correct {
+.question_toggle.correct,
+#quiz_main:has(.seasonal_list .answer.correct) .question_toggle[data-question-id="seasonal"] {
    background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, #49ff66 1em 4em, #881010 4em 8em);
 }
-.question_toggle.incorrect {
+.question_toggle.incorrect,
+#quiz_main:has(.seasonal_list .answer.incorrect) .question_toggle[data-question-id="seasonal"]  {
   background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-secondary) 1em 4em, #881010 4em 8em);
 }
 
@@ -266,7 +268,8 @@ img {
   padding: 0;
   margin: 0;
 }
-.answer.correct-selected {
+.answer.correct-selected,
+.seasonal_list .answer.correct {
   border-color: var(--theme-correct);
   color: var(--theme-correct);
 }
@@ -289,7 +292,8 @@ img {
 }
 
 
-.answer.incorrect-selected {
+.answer.incorrect-selected,
+.seasonal_list .answer.incorrect {
   border-color: var(--theme-incorrect);
   color: var(--theme-incorrect);
 }
