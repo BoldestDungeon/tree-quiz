@@ -92,14 +92,16 @@ function loadLanguage(lang){
       return language;
     });
 
-    let questionRequest = Promise.resolve(translation[lang]);
-    if(lang !== 'default' && lang !== 'en') {
-      questionRequest = fetch(`${baseURL}/data/${currentType}.${lang}.csv`)
-        .then(function(resp) { return resp.text() })
-        .then(saveQuestionTranslation)
-    }
+  let questionRequest;
+  if (lang !== 'default' && lang !== 'en') {
+    questionRequest = fetch(`${baseURL}/data/${currentType}.${lang}.csv`)
+      .then(function (resp) { return resp.text() })
+      .then(saveQuestionTranslation)
+  }
 
-  return Promise.all([[mainRequest, questionRequest]]);
+  const allRequests = [mainRequest, questionRequest].filter( obj => (obj || false) );
+
+  return Promise.all(allRequests);
 }
 
 function setUserLang(lang) {
