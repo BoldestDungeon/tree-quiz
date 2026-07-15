@@ -592,6 +592,10 @@ function generateQuestionToggle(id) {
 }
 
 function saveTranslationKey(key, value, lang){
+  // Blank row - nothing to do
+  if(!key || !value) {
+    return;
+  }
   // If CSV cell was wrapped with quotation marks (so that literal commas could be entered, for example), remove those
   if(value[0] === '"' && value[value.length-1] === '"') {
     value = value.slice(1, -1);
