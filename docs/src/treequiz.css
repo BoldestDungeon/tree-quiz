@@ -68,12 +68,18 @@ section.active {
 }
 
 .main-actions {
-  display: flex;
+  display: grid;
   flex-direction: column;
   position: relative;
   height: 50%;
   justify-content: space-between;
   text-align: center;
+  width: 100%;
+  grid-template-columns: 100%;
+  grid-template-rows: repeat(3, 4em);
+  align-items: center;
+  grid-gap: 0.75em;
+  padding-top: 3em;
 }
 
 .main-actions a,
@@ -226,12 +232,10 @@ img {
   filter: drop-shadow(0 0 0.1em black);
 }
 
-.question_toggle.correct,
-#quiz_main:has(.seasonal_list .correct) .question_toggle[data-question-id="seasonal"] {
+.question_toggle.correct {
    background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, #49ff66 1em 4em, #881010 4em 8em);
 }
-.question_toggle.incorrect,
-#quiz_main:has(.seasonal_list .incorrect) .question_toggle[data-question-id="seasonal"] {
+.question_toggle.incorrect {
   background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-secondary) 1em 4em, #881010 4em 8em);
 }
 
@@ -262,8 +266,7 @@ img {
   padding: 0;
   margin: 0;
 }
-.answer.correct-selected,
-.seasonal_list .answer.correct {
+.answer.correct-selected {
   border-color: var(--theme-correct);
   color: var(--theme-correct);
 }
@@ -286,8 +289,7 @@ img {
 }
 
 
-.answer.incorrect-selected,
-.seasonal_list .answer.incorrect {
+.answer.incorrect-selected {
   border-color: var(--theme-incorrect);
   color: var(--theme-incorrect);
 }
