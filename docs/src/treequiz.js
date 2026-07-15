@@ -657,6 +657,9 @@ function onCorrectAnswerSelected(evt) {
     hideQuestion(questionId) 
   }, 3000);
   target.classList.add('correct-selected');
+
+  const button = document.querySelector(`.question_toggle[data-question-id="${questionId}"]`);
+  button && button.classList.add('correct');
   lockQuestion(questionId);
 }
 function onIncorretAnswerSelected(evt) {
@@ -671,6 +674,8 @@ function onIncorretAnswerSelected(evt) {
     hideQuestion(questionId) 
   }, 3000);
   target.classList.add('incorrect-selected');
+  const button = document.querySelector(`.question_toggle[data-question-id="${questionId}"]`);
+  button && button.classList.add('incorrect');
   lockQuestion(questionId);
 }
 

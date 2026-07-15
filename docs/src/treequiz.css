@@ -217,6 +217,7 @@ img {
   transform: translateX(-50%) translateY(-50%);
   border: 0;
   background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-secondary) 1em 4em, #881010 4em 8em);
+  background-image: linear-gradient(#ccc);
   mask-image: url('/tree-quiz/src/icons/MGlass_Lens.png'), url('/tree-quiz/src/icons/MGlass_Ding.png'), url('/tree-quiz/src/icons/MGlass_Handle.png');
   mask-size: 6.5em 6.5em, 2.5em 2.5em, 2.7em 4em;
   mask-repeat: no-repeat;
@@ -224,18 +225,12 @@ img {
   background-blend-mode: normal;
   filter: drop-shadow(0 0 0.1em black);
 }
-.question_toggle::after {
-  content: '';
-  position: absolute;
-  height: 75%;
-  width: 100%;
-  bottom: -75%;
-  left: 74%;
-  background-image: url('/tree-quiz/src/icons/MGlass_Handle.png');
-  background-size: contain;
-  filter: hue-rotate(45deg);
-  mask-clip: url('/tree-quiz/src/icons/MGlass_Handle.png');
-  background-repeat: no-repeat;
+
+.question_toggle.correct {
+   background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-correct) 1em 4em, #881010 4em 8em);
+}
+.question_toggle.incorrect {
+  background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-incorrect) 1em 4em, #881010 4em 8em);
 }
 
 .question_toggle[data-question-id="seasonal"] {
