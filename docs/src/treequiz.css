@@ -227,10 +227,10 @@ img {
 }
 
 .question_toggle.correct {
-   background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-correct) 1em 4em, #881010 4em 8em);
+   background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, #49ff66 1em 4em, #881010 4em 8em);
 }
 .question_toggle.incorrect {
-  background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-incorrect) 1em 4em, #881010 4em 8em);
+  background-image: radial-gradient(circle at center 3em, #e0ffe030 1.9em, var(--theme-secondary) 1em 4em, #881010 4em 8em);
 }
 
 .question_toggle[data-question-id="seasonal"] {

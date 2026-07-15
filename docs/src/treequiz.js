@@ -658,7 +658,7 @@ function onCorrectAnswerSelected(evt) {
   }, 3000);
   target.classList.add('correct-selected');
 
-  const button = document.querySelector(`.question_toggle[data-question-id="${questionId}"]`);
+  const button = document.querySelector(`button[data-question-id="${questionId}"]`);
   button && button.classList.add('correct');
   lockQuestion(questionId);
 }
@@ -674,7 +674,7 @@ function onIncorretAnswerSelected(evt) {
     hideQuestion(questionId) 
   }, 3000);
   target.classList.add('incorrect-selected');
-  const button = document.querySelector(`.question_toggle[data-question-id="${questionId}"]`);
+  const button = document.querySelector(`button[data-question-id="${questionId}"]`);
   button && button.classList.add('incorrect');
   lockQuestion(questionId);
 }
@@ -749,7 +749,7 @@ function showQuestion(evt) {
   // Hide any open question
   const currentOpenQuestion = document.querySelector('.question.active');
   if(currentOpenQuestion) {
-    hideQuestion(currentOpenQuestion.id);
+    hideQuestion(currentOpenQuestion.id.replace('question_', ''));
   }
 
   target.classList.add('active');
