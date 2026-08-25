@@ -1,3 +1,4 @@
-id,name,aliases,datasheet,What kind of leaf structure is this?,q1 image,What is a defining feature of this tree?,q2 image
-C1,Mr. Bowling Ball arborvitae,,,,,,,
-C2,pyramidal arborvitae,,,,,,,
+id,name,aliases,datasheet,What does the leaf look like?,q1 image,Can you describe the bark?,q2 image,What type of flower does it have?,Flower Image,What does the fruit look like? ,Fruit/Seed Image,What is the fall color?,Fall Image
+C1,Mr. Bowling Ball arborvitae,,,,,,,,,,,,
+C2,pyramidal arborvitae,,,,,,,,,,,,
+C3,,,,,,,,,,,,,
